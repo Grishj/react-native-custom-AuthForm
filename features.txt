@@ -1,0 +1,244 @@
+Are you tired of writing the same old authentication boilerplate? 😩
+
+You know the drill:
+1.  Set up the UI (Inputs, Buttons, Social icons...)
+2.  Connect to Formik or React Hook Form 🔗
+3.  Write Zod or Yup validation schemas ✍️
+4.  Handle errors, focus states, passwords visibility... 🤯
+5.  Repeat for Sign In, Sign Up, Forgot Password... 🔄
+
+It's boring. It's frustrating. It's a waste of your creative energy.
+
+🚀 **Stop Component Fatigue. Start Building.**
+
+Introducing **React Native Custom Form** — the all-in-one logic-complete authentication solution.
+
+We've bundled everything you hate doing into one powerful, customizable component.
+
+**✨ Why you'll love it:**
+
+*   **Plug & Play:** Just pass your `onSubmit` handler. We handle the rest.
+*   **Flexible Validation:** Native support for **Zod** and **Yup**.
+*   **Form Power:** Choose between **Formik** or **React Hook Form** under the hood.
+*   **Fully Loaded:**
+    *   📱 Phone Input with Country Picker
+    *   👁️ Password Visibility Toggle
+    *   👆 Biometric Auth Ready
+    *   🌐 Social Login Buttons
+*   **100% Customizable:** Style every pixel to match your brand.
+
+---
+
+**📦 Installation**
+
+```bash
+npm install react-native-custom-form
+# or
+yarn add react-native-custom-form
+```
+
+---
+
+**🔥 The "Magic" Demo**
+
+Look how clean your code becomes. No generic form state management. No validation hook wiring. Just results.
+
+```tsx
+import React from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { AuthForm, AuthFormData } from 'react-native-custom-form';
+
+export default function App() {
+  const handleSubmit = (data: AuthFormData) => {
+    console.log('Form submitted:', data);
+  };
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+      <AuthForm
+        mode='signup'
+        onSubmit={handleSubmit}
+        validationType='rhf-yup'
+      />
+    </SafeAreaView>
+  );
+}
+```
+
+
+### Advanced Usage
+Here is a complete example demonstrating the power of `react-native-custom-form`:
+
+```tsx
+import React from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Image } from 'react-native';
+
+import { MaterialIcons, AntDesign, Entypo } from '@expo/vector-icons';
+
+import { AuthForm, AuthFormData } from 'react-native-custom-form';
+
+export default function App() {
+  const handleSubmit = (data: AuthFormData) => {
+    console.log('Form submitted:', data);
+  };
+
+  return (
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: '#fff' }}
+      edges={['top', 'left', 'right', 'bottom']}
+    >
+      <AuthForm
+        mode="signin"
+        validationType="formik-yup"
+        onSubmit={handleSubmit}
+        // Global icon source (can be overridden per field)
+        iconSource={MaterialIcons}
+
+        // Global Style Overrides
+        styles={{
+          container: { backgroundColor: '#fff' },
+          header: { alignItems: 'center', paddingHorizontal: 20 },
+          dividerText: { color: '#5f5d84ff', fontWeight: '300', fontSize: 26 },
+        }}
+
+        // Custom App Logo
+        appLogo={
+          <Image
+            source={{ uri: 'https://reactnative.dev/img/tiny_logo.png' }}
+            style={{ width: "50%", height: 150, borderRadius: 50, justifyContent: "center", alignItems: "center" }}
+            resizeMode="cover"
+          />
+        }
+
+        // Field Configuration & Styling
+        fields={{
+          phone: {
+            icon: 'mobile', // Icon name
+            iconSource: Entypo, // Custom icon source for this field
+            iconPosition: 'left',
+            iconStyle: { color: '#4f46e5', fontSize: 20 },
+            visible: true,
+            required: true,
+            placeholder: 'Enter your phone number',
+          },
+          username: {
+            icon: 'person',
+            iconPosition: 'left',
+            iconStyle: { color: '#101011ff', fontSize: 20 },
+            visible: true,
+            required: true,
+            placeholder: 'Enter your username',
+            placeholderStyle: { color: '#6161b4ff', fontSize: 15 },
+          },
+          password: {
+            icon: 'lock',
+            iconPosition: 'left',
+            iconStyle: { color: '#4f46e5', fontSize: 20 },
+            visible: true,
+            required: true,
+            placeholder: 'Enter your password',
+          },
+          firstName: {
+            icon: 'person',
+            iconPosition: 'left',
+            iconStyle: { color: '#4f46e5', fontSize: 20 },
+            visible: true,
+            required: true,
+            placeholder: 'Enter your first name',
+          },
+          lastName: {
+            icon: 'person',
+            iconPosition: 'left',
+            iconStyle: { color: '#4f46e5', fontSize: 20 },
+            visible: true,
+            required: true,
+            placeholder: 'Enter your last name',
+          },
+          confirmPassword: {
+            icon: 'lock',
+            iconPosition: 'left',
+            iconStyle: { color: '#4f46e5', fontSize: 20 },
+            visible: true,
+            required: true,
+            placeholder: 'Confirm Password',
+          },
+        }}
+
+        // Biometric Authentication
+        biometric={{
+          enabled: true,
+          type: 'fingerprint',
+          icon: 'fingerprint',
+          iconPosition: 'left',
+          iconStyle: { color: '#141418ff', fontSize: 20 },
+          style: {
+            backgroundColor: '#aeaeb9ff',
+            borderColor: '#141418ff',
+            borderRadius: 22,
+          },
+          promptMessage: "Scan your fingerprint to login",
+          promptStyle: { color: '#101012ff', fontSize: 12 },
+          onAuthenticate: () => console.log('Biometric Authenticated'),
+        }}
+
+        // Forgot Password Flow
+        forgotPassword={{
+          enabled: true,
+          text: 'Forgot Password?',
+          textStyle: { color: '#09090bff', fontWeight: '300' },
+          onPress: () => console.log('Navigate to Forgot Password screen'),
+        }}
+
+        // Submit Button
+        submitButton={{
+          text: 'SignIn',
+          style: { backgroundColor: '#78c14fff' },
+          textStyle: { color: '#8e2424ff' },
+          onPress: () => console.log('Submit button pressed'),
+        }}
+
+        // Remember Me Checkbox
+        rememberMe={{
+          enabled: true,
+          label: 'Keep me logged in',
+          labelStyle: { color: '#374151', fontWeight: '500' },
+          checkboxStyle: { borderColor: '#a2a0bcff', borderWidth: 2 },
+          checkboxCheckedStyle: { backgroundColor: '#4f46e5' },
+          checkmarkColor: '#ffffff',
+        }}
+
+        // Social Logins
+        socialLogins={[
+          { 
+            provider: 'google', 
+            onPress: () => console.log('Google Login'), 
+            iconPosition: 'left', 
+            iconStyle: { color: '#110b74ff', fontSize: 20 } 
+          },
+          { 
+            provider: 'facebook', 
+            onPress: () => console.log('Facebook Login'), 
+            icon: 'facebook', 
+            iconPosition: 'left', 
+            iconStyle: { color: '#4f46e5', fontSize: 20 } 
+          },
+        ]}
+
+        // Footer / Sign Up Link
+        footer={{
+          text: "Don't have an account?",
+          textStyle: { color: '#4f46e5', fontWeight: '300' },
+          textLink: 'Sign Up',
+          textLinkOnPress: () => console.log('Navigate to Sign Up screen'),
+          textLinkStyle: { color: '#638fe5ff' },
+        }}
+      />
+    </SafeAreaView>
+  );
+}
+
+```
+
+Stop re-inventing the wheel. 
+**Focus on your app, not your forms.**
