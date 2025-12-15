@@ -1,0 +1,55 @@
+{
+  "name": "react-native-custom-form",
+  "version": "1.0.0",
+  "description": "A highly customizable sign-in/sign-up screen component for React Native with multiple validation library support",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup src/index.tsx --format cjs,esm --dts",
+    "dev": "tsup src/index.tsx --format cjs,esm --dts --watch",
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "react-native",
+    "auth",
+    "authentication",
+    "login",
+    "signup",
+    "form",
+    "formik",
+    "react-hook-form",
+    "yup",
+    "zod",
+    "validation"
+  ],
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": ">=17.0.0",
+    "react-native": ">=0.64.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.45",
+    "@types/react-native": "^0.72.8",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "formik": "^2.4.5",
+    "react-hook-form": "^7.49.2",
+    "yup": "^1.3.2",
+    "zod": "^3.22.4",
+    "@hookform/resolvers": "^3.3.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/react-native-custom-form.git"
+  }
+}
