@@ -1,48 +1,79 @@
 # react-native-custom-form
 
-A highly customizable authentication form component for React Native with multiple validation library support, social logins, and biometric authentication.
+A highly customizable, feature-rich, and distinct authentication form for React Native. Built with flexibility in mind, it supports multiple validation strategies (Formik + Yup, React Hook Form + Zod/Yup), biometric authentication, social logins, and extensive styling capabilities.
 
-## ✨ Features
 
-- 🔐 **Multiple Validation Libraries** - Formik + Yup, React Hook Form + Yup, React Hook Form + Zod
-- 🔄 **Sign In / Sign Up Modes** - Seamless switching between authentication modes
-- 📱 **Social Login** - Google, Apple, Facebook, Twitter, GitHub with horizontal button layout
-- 👆 **Biometric Auth** - Fingerprint & Face ID support
-- 🌍 **Country Code Picker** - Built-in phone field with country selector (40+ countries)
-- 🎨 **Fully Customizable** - Style every component, use custom buttons, logos, and more
-- ✅ **Form Validation** - Built-in email, password strength, and phone validation
-- 🔒 **Forgot Password** - Integrated forgot password flow
-- 📝 **TypeScript** - Full type safety with comprehensive interfaces
+![Auth Screen all working Demo](./assets/preview.jpeg)
 
----
+## 🚀 Features
 
-## 📦 Installation
+- **Multiple Auth Modes:** Seamlessly switch between Sign In and Sign Up.
+- **Flexible Validation:** First-class support for **Formik** and **React Hook Form**, with **Yup** or **Zod** schemas.
+- **Biometric Integration:** Built-in UI for Fingerprint/FaceID authentication.
+- **Social Logins:** Easy-to-configure social login buttons (Google, Facebook, Apple, etc.).
+- **Colocated Styling:** Style every component (inputs, buttons, texts) directly from the configuration props.
+- **Icon System:** Unified `iconSource` prop supporting any icon library (e.g., `@expo/vector-icons`, `react-native-vector-icons`).
+- **Smart Inputs:** 
+  - Password visibility toggle.
+  - Phone number input with country code picker support.
+  - Auto-formatting and specific keyboard types.
+- **Hidden-by-Default:** clean API where you enable only what you need.
+
+## � Core Concepts
+
+To get the form running, you only need three required props:
+- `mode`: `'signin'` or `'signup'`.
+- `onSubmit`: A callback function that receives the form data.
+- `validationType`: Choose your validation strategy (e.g., `'rhf-yup'`).
+
+### Default Fields by Mode
+By default (without any `fields` config), the form renders:
+- **Signup Mode**: Email, Password, Confirm Password, Remember Me Checkbox, Submit Button.
+- **Signin Mode**: Email, Password, Remember Me Checkbox, Submit Button.
+
+> **Note**: You can manually override any field's visibility or style using the `fields` prop.
+
+### Manual Configuration & Styling
+You can manually configure and style any part of the form, such as `appLogo`, `header`, `footer`, `submitButton`, `socialLogins`, and `biometric`.
+
+If you do not provide these props, the form will use its default styles and layouts. For full control, simply pass the configuration objects as shown in the **Advanced Usage** example below.
+
+## �📦 Installation
 
 ```bash
 npm install react-native-custom-form
-# or
-yarn add react-native-custom-form
 ```
 
 ### Peer Dependencies
+Ensure you have the following installed based on your usage:
 
 ```bash
-npm install react react-native
+# Core
+npm install react-native-safe-area-context
+
+# Icons (Recommended)
+npm install @expo/vector-icons
+# OR for bare React Native
+npm install react-native-vector-icons
+
+# Validation (Choose your fighter)
+npm install formik yup
+# OR
+npm install react-hook-form zod
 ```
 
----
+## 💻 Usage
 
-## 🚀 Quick Start
+![Auth Screensignup working Demo](./assets/defaultSignup.jpeg)
 
-### 1. Basic Sign In Form
 
-The simplest way to add an authentication form:
+### Basic Usage
+The simplest way to use `AuthForm` with default fields:
 
 ```tsx
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { AuthForm } from 'react-native-custom-form';
-import type { AuthFormData } from 'react-native-custom-form';
+import { AuthForm, AuthFormData } from 'react-native-custom-form';
 
 export default function App() {
   const handleSubmit = (data: AuthFormData) => {
@@ -50,751 +81,28 @@ export default function App() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <AuthForm
-        mode="signin"
-        validationType="formik-yup"
+        mode='signup'
         onSubmit={handleSubmit}
-        header={{
-          title: 'Sign In',
-          subtitle: 'Sign in to continue',
-        }}
+        validationType='rhf-yup'
       />
     </SafeAreaView>
   );
 }
 ```
 
-> **Important:** Make sure to add `style={{ flex: 1 }}` to your container so the form displays properly.
-
-### 2. With Custom Header
-
-```tsx
-<AuthForm
-  mode="signin"
-  validationType="formik-yup"
-  onSubmit={handleSubmit}
-  header={{
-    title: '👋 Welcome Back',
-    subtitle: 'Sign in to access your account',
-  }}
-/>
-```
-
-### 2b. With App Logo
-
-You can add your app logo to the header in two ways:
-
-**Simple Logo (ReactNode):**
+### Advanced Usage
+Here is a complete example demonstrating the power of `react-native-custom-form`:
 
 ```tsx
-import { Image } from 'react-native';
-
-<AuthForm
-  mode="signin"
-  validationType="formik-yup"
-  onSubmit={handleSubmit}
-  header={{
-    logo: (
-      <Image
-        source={require('./assets/logo.png')}
-        style={{ width: 80, height: 80 }}
-        resizeMode="contain"
-      />
-    ),
-    title: 'Welcome Back',
-    subtitle: 'Sign in to continue',
-  }}
-/>
-```
-
-**Responsive Logo (with size configuration):**
-
-The logo automatically scales based on screen size - smaller on compact devices, larger on tablets:
-
-```tsx
-<AuthForm
-  mode="signin"
-  validationType="formik-yup"
-  onSubmit={handleSubmit}
-  header={{
-    logo: {
-      source: (
-        <Image
-          source={require('./assets/logo.png')}
-          style={{ width: '100%', height: '100%' }}
-          resizeMode="contain"
-        />
-      ),
-      size: 80,  // Base size (scales responsively)
-      // Or use explicit dimensions:
-      // width: 100,
-      // height: 60,
-    },
-    title: 'My App',
-    subtitle: 'Sign in to your account',
-  }}
-/>
-```
-
-
-### 3. Sign Up Form with Additional Fields
-
-```tsx
-<AuthForm
-  mode="signup"
-  validationType="rhf-zod"
-  onSubmit={handleSubmit}
-  header={{
-    title: '🚀 Get Started',
-    subtitle: 'Create your account in seconds',
-  }}
-  fields={{
-    firstName: { visible: true },
-    lastName: { visible: true },
-    phone: { visible: true, placeholder: '+1 (555) 000-0000' },
-  }}
-/>
-```
-
----
-
-## 🔥 Intermediate Examples
-
-### 4. Toggle Between Sign In & Sign Up
-
-```tsx
-import React, { useState } from 'react';
-import { AuthForm, AuthMode } from 'react-native-custom-form';
-
-export default function AuthScreen() {
-  const [mode, setMode] = useState<AuthMode>('signin');
-
-  return (
-    <AuthForm
-      mode={mode}
-      validationType="rhf-yup"
-      onSubmit={handleSubmit}
-      onModeChange={(newMode) => setMode(newMode)}
-      header={{
-        title: mode === 'signin' ? 'Welcome Back' : 'Create Account',
-        subtitle: mode === 'signin' 
-          ? 'Sign in to continue' 
-          : 'Join us today',
-      }}
-    />
-  );
-}
-```
-
-### 5. With Social Logins
-
-Social buttons appear in a horizontal row with pill-shaped styling:
-
-```tsx
-<AuthForm
-  mode="signin"
-  validationType="formik-yup"
-  onSubmit={handleSubmit}
-  socialLogins={[
-    {
-      provider: 'google',
-      onPress: () => handleGoogleLogin(),
-    },
-    {
-      provider: 'facebook',
-      onPress: () => handleFacebookLogin(),
-    },
-    {
-      provider: 'apple',
-      onPress: () => handleAppleLogin(),
-    },
-  ]}
-/>
-```
-
-### 6. With Forgot Password
-
-The "Forgot Password?" link automatically appears **below the password field** (right-aligned) when you provide `onForgotPassword`:
-
-```tsx
-<AuthForm
-  mode="signin"
-  validationType="formik-yup"
-  onSubmit={handleSubmit}
-  // Top-level prop (recommended)
-  onForgotPassword={() => navigation.navigate('ForgotPassword')}
-/>
-```
-
-> **Note:** `onForgotPassword` can also be passed via `footer.onForgotPassword` for backward compatibility, but the top-level prop is preferred.
-
-### 6b. Phone Field with Country Code Picker
-
-Add a phone field with an optional country code picker:
-
-```tsx
-<AuthForm
-  mode="signup"
-  validationType="formik-yup"
-  onSubmit={handleSubmit}
-  fields={{
-    phone: {
-      visible: true,
-      placeholder: '(555) 000-0000',
-      countryPicker: {
-        enabled: true,         // Enable the country picker (disabled by default)
-        defaultCountry: 'US',  // ISO country code
-      },
-    },
-  }}
-/>
-```
-
-> **Note:** The country picker is disabled by default. Set `countryPicker.enabled: true` to show it.
-
-### 7. With Loading State & API Errors
-
-```tsx
-const [isLoading, setIsLoading] = useState(false);
-const [apiError, setApiError] = useState<string>();
-
-const handleSubmit = async (data) => {
-  setIsLoading(true);
-  setApiError(undefined);
-  
-  try {
-    await api.login(data);
-  } catch (error) {
-    setApiError('Invalid email or password');
-  } finally {
-    setIsLoading(false);
-  }
-};
-
-<AuthForm
-  mode="signin"
-  validationType="formik-yup"
-  onSubmit={handleSubmit}
-  isLoading={isLoading}
-  apiError={apiError}
-/>
-```
-
----
-
-## 🎯 Advanced Examples
-
-### 8. Biometric Authentication
-
-```tsx
-import { Alert } from 'react-native';
-
-<AuthForm
-  mode="signin"
-  validationType="formik-yup"
-  onSubmit={handleSubmit}
-  biometric={{
-    enabled: true,
-    type: 'fingerprint', // 'fingerprint' | 'faceId' | 'both'
-    onAuthenticate: async () => {
-      // Integrate with expo-local-authentication or react-native-biometrics
-      const result = await LocalAuthentication.authenticateAsync();
-      if (result.success) {
-        // Handle successful biometric auth
-      }
-    },
-    promptMessage: 'Sign in with Fingerprint',
-  }}
-/>
-```
-
-### 9. Full Customization with Styles
-
-```tsx
-<AuthForm
-  mode="signin"
-  validationType="formik-yup"
-  onSubmit={handleSubmit}
-  header={{
-    title: 'Welcome',
-    subtitle: 'Sign in to your account',
-  }}
-  styles={{
-    // Container
-    container: { 
-      backgroundColor: '#0f172a',
-    },
-    // Header
-    headerTitle: { 
-      fontSize: 36, 
-      fontWeight: '800',
-      color: '#ffffff',
-    },
-    headerSubtitle: { 
-      fontSize: 16, 
-      color: '#94a3b8',
-    },
-    // Inputs
-    inputContainer: {
-      backgroundColor: '#1e293b',
-      borderRadius: 12,
-    },
-    input: { 
-      color: '#ffffff',
-    },
-    inputLabel: { 
-      color: '#e2e8f0',
-    },
-    inputError: {
-      color: '#f87171',
-    },
-    // Button
-    button: { 
-      backgroundColor: '#6366f1',
-      borderRadius: 14,
-      height: 56,
-    },
-    buttonText: { 
-      fontWeight: '700',
-      fontSize: 16,
-    },
-    // Footer
-    footerText: { 
-      color: '#94a3b8',
-    },
-    footerLink: { 
-      color: '#818cf8',
-    },
-  }}
-/>
-```
-
-### 9b. Custom Submit Button
-
-Customize the submit button or use your own component:
-
-**Style the default button:**
-
-```tsx
-<AuthForm
-  mode="signin"
-  validationType="formik-yup"
-  onSubmit={handleSubmit}
-  submitButton={{
-    text: 'Login Now',
-    style: { backgroundColor: '#000000', borderRadius: 8 },
-    textStyle: { fontWeight: 'bold', fontSize: 18 },
-  }}
-/>
-```
-
-**Use your own button component:**
-
-```tsx
-<AuthForm
-  mode="signin"
-  validationType="formik-yup"
-  onSubmit={handleSubmit}
-  submitButton={{
-    component: ({ onPress, isLoading, title }) => (
-      <MyCustomButton
-        onPress={onPress}
-        loading={isLoading}
-        label={title}
-      />
-    ),
-  }}
-/>
-```
-
-### 10. Custom Field Labels & Placeholders
-
-```tsx
-<AuthForm
-  mode="signup"
-  validationType="rhf-zod"
-  onSubmit={handleSubmit}
-  fields={{
-    email: {
-      label: 'Work Email',
-      placeholder: 'you@company.com',
-    },
-    password: {
-      label: 'Create Password',
-      placeholder: 'Min. 8 characters',
-    },
-    confirmPassword: {
-      label: 'Repeat Password',
-      placeholder: 'Enter password again',
-    },
-    firstName: {
-      visible: true,
-      label: 'First Name',
-      placeholder: 'John',
-    },
-    lastName: {
-      visible: true,
-      label: 'Last Name',
-      placeholder: 'Doe',
-    },
-  }}
-/>
-```
-
-### 11. With Initial Values (Edit Profile / Pre-fill)
-
-```tsx
-<AuthForm
-  mode="signin"
-  validationType="formik-yup"
-  onSubmit={handleSubmit}
-  initialValues={{
-    email: 'user@example.com',
-    rememberMe: true,
-  }}
-/>
-```
-
-### 12. Complete Full-Featured Example
-
-```tsx
-import React, { useState } from 'react';
-import { SafeAreaView, Alert } from 'react-native';
-import { AuthForm, AuthFormData, AuthMode, ValidationType } from 'react-native-custom-form';
-
-export default function AuthScreen() {
-  const [mode, setMode] = useState<AuthMode>('signin');
-  const [isLoading, setIsLoading] = useState(false);
-  const [apiError, setApiError] = useState<string>();
-
-  const handleSubmit = async (data: AuthFormData) => {
-    setIsLoading(true);
-    setApiError(undefined);
-
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      Alert.alert('Success', `Welcome, ${data.email}!`);
-    } catch (error) {
-      setApiError('Authentication failed. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSocialLogin = (provider: string) => {
-    Alert.alert('Social Login', `${provider} selected`);
-  };
-
-  const handleBiometric = async () => {
-    Alert.alert('Biometric', 'Authenticating...');
-  };
-
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#f8fafc' }}>
-      <AuthForm
-        mode={mode}
-        validationType="rhf-zod"
-        onSubmit={handleSubmit}
-        onModeChange={setMode}
-        isLoading={isLoading}
-        apiError={apiError}
-        header={{
-          title: mode === 'signin' ? '👋 Welcome Back' : '🚀 Get Started',
-          subtitle: mode === 'signin'
-            ? 'Sign in to access your account'
-            : 'Create your account in seconds',
-        }}
-        footer={{
-          onForgotPassword: () => Alert.alert('Forgot Password'),
-          onTermsPress: () => Alert.alert('Terms of Service'),
-          onPrivacyPress: () => Alert.alert('Privacy Policy'),
-        }}
-        fields={{
-          firstName: { visible: mode === 'signup' },
-          lastName: { visible: mode === 'signup' },
-          phone: { visible: false },
-          username: { visible: false },
-        }}
-        biometric={{
-          enabled: mode === 'signin',
-          type: 'fingerprint',
-          onAuthenticate: handleBiometric,
-          promptMessage: 'Sign in with Fingerprint',
-        }}
-        socialLogins={[
-          { provider: 'google', onPress: () => handleSocialLogin('Google') },
-          { provider: 'apple', onPress: () => handleSocialLogin('Apple') },
-        ]}
-        showRememberMe={mode === 'signin'}
-        showAcceptTerms={mode === 'signup'}
-        styles={{
-          container: { backgroundColor: '#f8fafc' },
-          headerTitle: { fontSize: 32, fontWeight: '800', color: '#1e293b' },
-          headerSubtitle: { fontSize: 16, color: '#64748b' },
-          button: { backgroundColor: '#6366f1', borderRadius: 14, height: 56 },
-        }}
-      />
-    </SafeAreaView>
-  );
-}
-```
-
----
-
-## 🔀 Using ForgotPasswordForm
-
-A standalone forgot password form component:
-
-```tsx
-import { ForgotPasswordForm } from 'react-native-custom-form';
-
-<ForgotPasswordForm
-  onSubmit={(email) => {
-    console.log('Reset password for:', email);
-  }}
-  onBackToLogin={() => navigation.goBack()}
-  successMessage="We've sent you an email with reset instructions."
-/>
-```
-
----
-
-## 📋 Props Reference
-
-### AuthFormProps
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `mode` | `'signin' \| 'signup'` | **required** | Authentication mode |
-| `validationType` | `'formik-yup' \| 'rhf-yup' \| 'rhf-zod'` | **required** | Validation library |
-| `onSubmit` | `(data: AuthFormData) => void` | **required** | Form submit handler |
-| `onModeChange` | `(mode: AuthMode) => void` | - | Mode toggle callback |
-| `header` | `{ title?, subtitle?, logo? }` | - | Header configuration |
-| `footer` | `FooterConfig` | - | Footer configuration |
-| `fields` | `FieldsConfig` | - | Field visibility/config |
-| `socialLogins` | `SocialLoginConfig[]` | - | Social login buttons |
-| `biometric` | `BiometricConfig` | - | Biometric auth config |
-| `styles` | `AuthFormStyles` | - | Custom styling |
-| `isLoading` | `boolean` | `false` | Show loading state |
-| `apiError` | `string` | - | Display API error |
-| `submitButtonText` | `string` | Auto | Custom button text |
-| `showRememberMe` | `boolean` | `true` | Show remember me (signin) |
-| `showAcceptTerms` | `boolean` | `true` | Show terms checkbox (signup) |
-| `initialValues` | `Partial<AuthFormData>` | - | Pre-fill form values |
-| `onForgotPassword` | `() => void` | - | Forgot password callback |
-| `submitButton` | `SubmitButtonConfig` | - | Custom submit button config |
-
-### AuthFormData
-
-```typescript
-interface AuthFormData {
-  email: string;
-  password: string;
-  confirmPassword?: string;
-  firstName?: string;
-  lastName?: string;
-  phone?: string;
-  username?: string;
-  rememberMe?: boolean;
-  acceptTerms?: boolean;
-}
-```
-
-### BiometricConfig
-
-```typescript
-interface BiometricConfig {
-  enabled: boolean;
-  type?: 'fingerprint' | 'faceId' | 'both';
-  onAuthenticate: () => void | Promise<void>;
-  promptMessage?: string;
-}
-```
-
-### LogoConfig
-
-For responsive app logos in the header:
-
-```typescript
-interface LogoConfig {
-  source: ReactNode;       // Your logo component (Image, SVG, etc.)
-  size?: number;           // Uniform size (responsive by default)
-  width?: number;          // Explicit width
-  height?: number;         // Explicit height
-  style?: ViewStyle;       // Additional container styling
-}
-```
-
-**Responsive Behavior:**
-- **Small screens** (< 375px): Logo scales down to 60px
-- **Medium screens** (375-428px): Logo uses 72px  
-- **Large screens** (> 428px): Logo uses 80px or your specified size
-
-### SocialLoginConfig
-
-```typescript
-interface SocialLoginConfig {
-  provider: 'google' | 'apple' | 'facebook' | 'twitter' | 'github';
-  onPress: () => void | Promise<void>;
-  disabled?: boolean;
-  iconComponent?: ReactNode;  // Custom icon
-  label?: string;             // Custom label
-}
-```
-
-### AuthFormStyles
-
-```typescript
-interface AuthFormStyles {
-  container?: ViewStyle;
-  header?: ViewStyle;
-  headerTitle?: TextStyle;
-  headerSubtitle?: TextStyle;
-  logoContainer?: ViewStyle;     // Logo container styling
-  body?: ViewStyle;
-  inputContainer?: ViewStyle;
-  input?: TextStyle;
-  inputLabel?: TextStyle;
-  inputError?: TextStyle;
-  button?: ViewStyle;
-  buttonText?: TextStyle;
-  buttonDisabled?: ViewStyle;
-  footer?: ViewStyle;
-  footerText?: TextStyle;
-  footerLink?: TextStyle;
-  socialButtonsContainer?: ViewStyle;
-  socialButton?: ViewStyle;
-}
-```
-
-### CountryPickerConfig
-
-Configuration for the phone field country code picker:
-
-```typescript
-interface CountryPickerConfig {
-  enabled: boolean;              // Enable/disable country picker
-  defaultCountry?: string;       // ISO country code (e.g., 'US', 'NP')
-  customComponent?: (props: {    // Use your own picker component
-    selectedCountry: CountryData;
-    onSelect: (country: CountryData) => void;
-    visible: boolean;
-    onClose: () => void;
-  }) => ReactNode;
-  styles?: {                     // Custom styling
-    container?: ViewStyle;
-    button?: ViewStyle;
-    buttonText?: TextStyle;
-    modalContainer?: ViewStyle;
-    listItem?: ViewStyle;
-    listItemText?: TextStyle;
-  };
-}
-```
-
-### PhoneFieldConfig
-
-Extended configuration for phone fields:
-
-```typescript
-interface PhoneFieldConfig extends FieldConfig {
-  countryPicker?: CountryPickerConfig;
-}
-```
-
-### SubmitButtonConfig
-
-Configuration for custom submit buttons:
-
-```typescript
-interface SubmitButtonConfig {
-  component?: (props: {          // Custom button component
-    onPress: () => void;
-    isLoading: boolean;
-    disabled?: boolean;
-    title: string;
-  }) => ReactNode;
-  text?: string;                 // Button text
-  style?: ViewStyle;             // Button style
-  textStyle?: TextStyle;         // Text style
-  disabledStyle?: ViewStyle;     // Disabled state style
-}
-```
-
-### CountryData
-
-Country information for the picker:
-
-```typescript
-interface CountryData {
-  code: string;      // ISO country code (e.g., 'US', 'NP')
-  name: string;      // Country name
-  dialCode: string;  // Dial code (e.g., '+1', '+977')
-  flag?: string;     // Emoji flag
-}
-```
-
----
-
-## 🧩 Exported Components
-
-Import individual components for advanced customization:
-
-```typescript
-import {
-  // Main Components
-  AuthForm,
-  ForgotPasswordForm,
-  
-  // UI Components
-  Header,
-  Footer,
-  Input,
-  PhoneInput,
-  CountryCodePicker,
-  getCountryByCode,
-  COUNTRIES,
-  SocialButton,
-  SocialLoginGroup,
-  SubmitButton,
-  Checkbox,
-  
-  // Form Strategies (for custom implementations)
-  FormikForm,
-  RHFForm,
-  
-  // Validation Schemas (for extension)
-  getYupSchema,
-  getYupSignInSchema,
-  getYupSignUpSchema,
-  getZodSchema,
-  zodSignInSchema,
-  zodSignUpSchema,
-  
-  // Types
-  type AuthFormProps,
-  type AuthFormData,
-  type AuthMode,
-  type ValidationType,
-  type BiometricConfig,
-  type SocialLoginConfig,
-  type CountryData,
-  type CountryPickerConfig,
-  type PhoneFieldConfig,
-  type SubmitButtonConfig,
-} from 'react-native-custom-form';
-```
-example
-
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Image } from 'react-native';
 
-// Local Auth Package
-import { AuthForm } from '../src';
-import type { AuthFormData } from '../src';
+import { MaterialIcons, AntDesign, Entypo } from '@expo/vector-icons';
+
+import { AuthForm, AuthFormData } from 'react-native-custom-form';
 
 export default function App() {
   const handleSubmit = (data: AuthFormData) => {
@@ -810,50 +118,113 @@ export default function App() {
         mode="signin"
         validationType="formik-yup"
         onSubmit={handleSubmit}
+        // Global icon source (can be overridden per field)
+        iconSource={MaterialIcons}
 
-        header={{
-          logo: (
-            <Image
-              source={{ uri: 'https://reactnative.dev/img/tiny_logo.png' }}
-              style={{ width: 80, height: 80 }}
-              resizeMode="contain"
-            />
-          ),
-          title: 'Sign In',
-          subtitle: 'Sign in to continue',
+        // Global Style Overrides
+        styles={{
+          container: { backgroundColor: '#fff' },
+          header: { alignItems: 'center', paddingHorizontal: 20 },
+          dividerText: { color: '#5f5d84ff', fontWeight: '300', fontSize: 26 },
         }}
 
+        // Custom App Logo
+        appLogo={
+          <Image
+            source={{ uri: 'https://reactnative.dev/img/tiny_logo.png' }}
+            style={{ width: "50%", height: 150, borderRadius: 50, justifyContent: "center", alignItems: "center" }}
+            resizeMode="cover"
+          />
+        }
+
+        // Field Configuration & Styling
         fields={{
           phone: {
+            icon: 'mobile', // Icon name
+            iconSource: Entypo, // Custom icon source for this field
+            iconPosition: 'left',
+            iconStyle: { color: '#4f46e5', fontSize: 20 },
             visible: true,
-            required: true,  // Now validates as required
+            required: true,
             placeholder: 'Enter your phone number',
-            countryPicker: { enabled: true, defaultCountry: 'NP' }
+          },
+          username: {
+            icon: 'person',
+            iconPosition: 'left',
+            iconStyle: { color: '#101011ff', fontSize: 20 },
+            visible: true,
+            required: true,
+            placeholder: 'Enter your username',
+            placeholderStyle: { color: '#6161b4ff', fontSize: 15 },
+          },
+          password: {
+            icon: 'lock',
+            iconPosition: 'left',
+            iconStyle: { color: '#4f46e5', fontSize: 20 },
+            visible: true,
+            required: true,
+            placeholder: 'Enter your password',
+          },
+          firstName: {
+            icon: 'person',
+            iconPosition: 'left',
+            iconStyle: { color: '#4f46e5', fontSize: 20 },
+            visible: true,
+            required: true,
+            placeholder: 'Enter your first name',
+          },
+          lastName: {
+            icon: 'person',
+            iconPosition: 'left',
+            iconStyle: { color: '#4f46e5', fontSize: 20 },
+            visible: true,
+            required: true,
+            placeholder: 'Enter your last name',
+          },
+          confirmPassword: {
+            icon: 'lock',
+            iconPosition: 'left',
+            iconStyle: { color: '#4f46e5', fontSize: 20 },
+            visible: true,
+            required: true,
+            placeholder: 'Confirm Password',
           },
         }}
 
+        // Biometric Authentication
         biometric={{
           enabled: true,
           type: 'fingerprint',
+          icon: 'fingerprint',
+          iconPosition: 'left',
+          iconStyle: { color: '#141418ff', fontSize: 20 },
+          style: {
+            backgroundColor: '#aeaeb9ff',
+            borderColor: '#141418ff',
+            borderRadius: 22,
+          },
+          promptMessage: "Scan your fingerprint to login",
+          promptStyle: { color: '#101012ff', fontSize: 12 },
           onAuthenticate: () => console.log('Biometric Authenticated'),
         }}
 
-        // Forgot Password configuration
+        // Forgot Password Flow
         forgotPassword={{
           enabled: true,
           text: 'Forgot Password?',
-          textStyle: { color: '#4f46e5', fontWeight: '300' },
+          textStyle: { color: '#09090bff', fontWeight: '300' },
           onPress: () => console.log('Navigate to Forgot Password screen'),
         }}
 
-        // Custom submit button styling
+        // Submit Button
         submitButton={{
-          text: 'Login',
+          text: 'SignIn',
           style: { backgroundColor: '#78c14fff' },
           textStyle: { color: '#8e2424ff' },
+          onPress: () => console.log('Submit button pressed'),
         }}
 
-        // Remember Me checkbox customization
+        // Remember Me Checkbox
         rememberMe={{
           enabled: true,
           label: 'Keep me logged in',
@@ -863,343 +234,86 @@ export default function App() {
           checkmarkColor: '#ffffff',
         }}
 
+        // Social Logins
         socialLogins={[
-          { provider: 'google', onPress: () => console.log('Google Login') },
-          { provider: 'facebook', onPress: () => console.log('Facebook Login') },
+          { 
+            provider: 'google', 
+            onPress: () => console.log('Google Login'), 
+            iconPosition: 'left', 
+            iconStyle: { color: '#110b74ff', fontSize: 20 } 
+          },
+          { 
+            provider: 'facebook', 
+            onPress: () => console.log('Facebook Login'), 
+            icon: 'facebook', 
+            iconPosition: 'left', 
+            iconStyle: { color: '#4f46e5', fontSize: 20 } 
+          },
         ]}
 
+        // Footer / Sign Up Link
         footer={{
           text: "Don't have an account?",
+          textStyle: { color: '#4f46e5', fontWeight: '300' },
           textLink: 'Sign Up',
           textLinkOnPress: () => console.log('Navigate to Sign Up screen'),
           textLinkStyle: { color: '#638fe5ff' },
         }}
-
-
       />
     </SafeAreaView>
   );
 }
+```
 
+## ⚙️ Configuration Objects
 
+### `AuthForm` Props
 
-import React from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Image } from 'react-native';
+| Prop | Type | Description |
+|------|------|-------------|
+| `mode` | `'signin' \| 'signup'` | Controls visible fields and default texts. |
+| `validationType` | `'formik-yup' \| 'rhf-zod' \| 'rhf-yup'` | Strategy validation strategy. |
+| `onSubmit` | `(data: AuthFormData) => void` | Callback with form data. |
+| `iconSource` | `React.ComponentType` | Global icon family (e.g., `MaterialIcons`). |
+| `fields` | `FieldsConfig` | Configuration for individual fields. |
+| `styles` | `AuthFormStyles` | Global override for container styles. |
+| `appLogo` | `ReactNode` | Render a custom logo/image at the top. |
+| `biometric` | `BiometricConfig` | Config for fingerprint/faceID button. |
+| `socialLogins` | `SocialLoginConfig[]` | Array of social providers. |
+| `submitButton` | `SubmitButtonConfig` | Style and text for the main action button. |
+| `footer` | `FooterConfig` | Text components for the bottom (Sign Up link). |
 
-// Local Auth Package
-import { AuthForm } from '../src';
-import type { AuthFormData } from '../src';
+### `FieldConfig` (e.g., `fields.username`)
 
-export default function App() {
-  const handleSubmit = (data: AuthFormData) => {
-    console.log('Form submitted:', data);
-  };
+| Prop | Type | Description |
+|------|------|-------------|
+| `visible` | `boolean` | Whether the field is rendered. |
+| `required` | `boolean` | Enables validation for this field. |
+| `label` | `string` | Label text above input (optional). |
+| `placeholder` | `string` | Input placeholder text. |
+| `icon` | `string` | Icon name (passed to `iconSource`). |
+| `iconSource` | `Component` | Override the global icon source for this field. |
+| `iconPosition` | `'left' \| 'right'` | Position of the icon. |
+| `iconStyle` | `TextStyle` | Style object for the icon. |
+| `placeholderStyle`| `TextStyle` | Style for the placeholder text. |
 
-  return (
-    <SafeAreaView
-      style={{ flex: 1, backgroundColor: '#f8fafc' }}
-      edges={['top', 'left', 'right', 'bottom']}
-    >
-      <AuthForm
-        mode="signin"
-        validationType="formik-yup"
-        onSubmit={handleSubmit}
+## 🎨 Styling
 
-        // ========================================
-        // HEADER STYLING
-        // ========================================
-        header={{
-          logo: (
-            <Image
-              source={{ uri: 'https://reactnative.dev/img/tiny_logo.png' }}
-              style={{ width: 90, height: 90, borderRadius: 20 }}
-              resizeMode="contain"
-            />
-          ),
-          title: 'Welcome Back',
-          subtitle: 'Sign in to your account',
-        }}
+The library supports **Colocated Styling**, meaning you can style almost any sub-component directly from its configuration object without needing a massive global stylesheet.
 
-        // ========================================
-        // FIELD CONFIGURATION
-        // ========================================
-        fields={{
-          email: {
-            visible: true,
-            label: 'Email Address',
-            placeholder: 'you@example.com',
-          },
-          password: {
-            visible: true,
-            label: 'Password',
-            placeholder: '••••••••',
-          },
-          phone: {
-            visible: true,
-            required: true,
-            label: 'Phone Number',
-            placeholder: 'Enter your phone',
-            countryPicker: { enabled: true, defaultCountry: 'NP' },
-          },
-        }}
+Example:
+```tsx
+biometric={{
+  style: { backgroundColor: 'gray', borderRadius: 20 },
+  textStyle: { color: 'white' },
+  iconStyle: { color: 'blue' }
+}}
+```
 
-        // ========================================
-        // BIOMETRIC STYLING
-        // ========================================
-        biometric={{
-          enabled: true,
-          type: 'fingerprint',
-          promptMessage: 'Authenticate with biometrics',
-          onAuthenticate: () => console.log('Biometric success!'),
-        }}
+## 🤝 Contributing
 
-        // ========================================
-        // FORGOT PASSWORD STYLING
-        // ========================================
-        forgotPassword={{
-          enabled: true,
-          text: 'Forgot your password?',
-          style: { alignItems: 'flex-end', marginTop: -8, marginBottom: 12 },
-          textStyle: {
-            color: '#6366f1',
-            fontWeight: '600',
-            fontSize: 14,
-          },
-          onPress: () => console.log('Forgot password pressed'),
-        }}
-
-        // ========================================
-        // SUBMIT BUTTON STYLING
-        // ========================================
-        submitButton={{
-          text: 'Sign In',
-          style: {
-            backgroundColor: '#6366f1',
-            borderRadius: 14,
-            height: 54,
-            shadowColor: '#6366f1',
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.3,
-            shadowRadius: 8,
-            elevation: 6,
-          },
-          textStyle: {
-            color: '#ffffff',
-            fontSize: 17,
-            fontWeight: '700',
-            letterSpacing: 0.5,
-          },
-          disabledStyle: {
-            backgroundColor: '#a5b4fc',
-            shadowOpacity: 0,
-          },
-        }}
-
-        // ========================================
-        // REMEMBER ME CHECKBOX STYLING
-        // ========================================
-        rememberMe={{
-          enabled: true,
-          label: 'Keep me signed in',
-          containerStyle: { marginVertical: 8 },
-          checkboxStyle: {
-            borderColor: '#c7d2fe',
-            borderWidth: 2,
-            borderRadius: 6,
-            width: 24,
-            height: 24,
-          },
-          checkboxCheckedStyle: {
-            backgroundColor: '#6366f1',
-            borderColor: '#6366f1',
-          },
-          checkmarkColor: '#ffffff',
-          labelStyle: {
-            color: '#4b5563',
-            fontSize: 15,
-            fontWeight: '500',
-          },
-        }}
-
-        // ========================================
-        // SOCIAL LOGINS STYLING
-        // ========================================
-        socialLogins={[
-          {
-            provider: 'google',
-            label: 'Google',
-            onPress: () => console.log('Google Login'),
-          },
-          {
-            provider: 'apple',
-            label: 'Apple',
-            onPress: () => console.log('Apple Login'),
-          },
-          {
-            provider: 'facebook',
-            label: 'Facebook',
-            onPress: () => console.log('Facebook Login'),
-          },
-        ]}
-
-        // ========================================
-        // FOOTER STYLING
-        // ========================================
-        footer={{
-          text: "Don't have an account?",
-          textLink: 'Create Account',
-          textLinkOnPress: () => console.log('Navigate to Sign Up'),
-          textStyle: {
-            color: '#6b7280',
-            fontSize: 15,
-          },
-          textLinkStyle: {
-            color: '#6366f1',
-            fontWeight: '700',
-            fontSize: 15,
-          },
-        }}
-
-        // ========================================
-        // GLOBAL STYLES (AuthFormStyles)
-        // ========================================
-        styles={{
-          // Main container
-          container: {
-            backgroundColor: '#f8fafc',
-            paddingHorizontal: 0,
-          },
-
-          // Header styles
-          header: {
-            alignItems: 'center',
-            marginBottom: 32,
-          },
-          logoContainer: {
-            marginBottom: 20,
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.1,
-            shadowRadius: 8,
-          },
-          headerTitle: {
-            fontSize: 28,
-            fontWeight: '800',
-            color: '#1f2937',
-            letterSpacing: -0.5,
-          },
-          headerSubtitle: {
-            fontSize: 16,
-            color: '#6b7280',
-            marginTop: 8,
-          },
-
-          // Form body
-          body: {
-            paddingHorizontal: 24,
-          },
-
-          // Input field styles
-          inputContainer: {
-            marginBottom: 16,
-          },
-          input: {
-            backgroundColor: '#ffffff',
-            borderRadius: 12,
-            borderWidth: 1.5,
-            borderColor: '#e5e7eb',
-            fontSize: 16,
-            color: '#1f2937',
-            paddingHorizontal: 16,
-            height: 52,
-          },
-          inputLabel: {
-            fontSize: 14,
-            fontWeight: '600',
-            color: '#374151',
-            marginBottom: 8,
-          },
-          inputError: {
-            fontSize: 13,
-            color: '#ef4444',
-            marginTop: 6,
-          },
-          // Input focus/blur border colors
-          inputFocused: {
-            borderColor: '#6366f1',
-            borderWidth: 2,
-            shadowColor: '#6366f1',
-            shadowOffset: { width: 0, height: 0 },
-            shadowOpacity: 0.2,
-            shadowRadius: 8,
-            elevation: 3,
-          },
-          inputBlurred: {
-            borderColor: '#e5e7eb',
-            borderWidth: 1.5,
-          },
-
-          // Button styles (fallback if submitButton not provided)
-          button: {
-            backgroundColor: '#6366f1',
-            borderRadius: 14,
-            height: 54,
-          },
-          buttonText: {
-            color: '#ffffff',
-            fontSize: 17,
-            fontWeight: '700',
-          },
-          buttonDisabled: {
-            backgroundColor: '#a5b4fc',
-          },
-
-          // Footer styles
-          footer: {
-            marginTop: 24,
-            alignItems: 'center',
-          },
-          footerText: {
-            color: '#6b7280',
-            fontSize: 15,
-          },
-          footerLink: {
-            color: '#6366f1',
-            fontWeight: '700',
-          },
-
-          // Social buttons styles
-          socialButtonsContainer: {
-            marginTop: 16,
-          },
-          socialButton: {
-            borderRadius: 12,
-            borderWidth: 1.5,
-            borderColor: '#e5e7eb',
-            backgroundColor: '#ffffff',
-          },
-
-          // Divider styles
-          divider: {
-            marginVertical: 24,
-          },
-          dividerText: {
-            color: '#9ca3af',
-            fontSize: 14,
-            fontWeight: '500',
-          },
-        }}
-      />
-    </SafeAreaView>
-  );
-}
-
-
-
-
----
+Contributions are welcome! Please open an issue or submit a pull request.
 
 ## 📄 License
 
-MIT © 2024
+MIT  2025 grish joshi

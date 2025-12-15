@@ -1,3 +1,4 @@
+import React from 'react';
 import { TouchableOpacity, Text, View, StyleSheet, ViewStyle, useWindowDimensions, TextStyle } from 'react-native';
 import { SocialButtonProps, SocialProvider } from '../types';
 import { GoogleIcon, AppleIcon, FacebookIcon, TwitterIcon, GitHubIcon } from './Icons';
@@ -36,18 +37,20 @@ const getSocialConfig = (size: number): Record<SocialProvider, SocialConfig> => 
     },
 });
 
+// Interface is already defined in ../types
+// removing local SocialButtonProps interface
+
 export const SocialButton: React.FC<SocialButtonProps> = ({
     provider,
     onPress,
     disabled = false,
-    iconComponent,
+    iconSource,
     label,
     style,
     textStyle,
     iconStyle,
     icon,
     iconPosition = 'left',
-    IconComponent,
 }) => {
     const { width: screenWidth } = useWindowDimensions();
 
@@ -87,6 +90,43 @@ export const SocialButton: React.FC<SocialButtonProps> = ({
 
     const config = getSocialConfig(getIconSize())[provider];
 
+    const renderIcon = () => {
+        // Explicit single icon override
+        if (icon) {
+            if (typeof icon === 'string' && iconSource) {
+                const IconSource = iconSource;
+                return (
+                    <IconSource
+                        name={icon}
+                        size={getIconSize()}
+                        color={config.color}
+                        style={iconStyle}
+                    />
+                );
+            }
+            if (React.isValidElement(icon)) return icon;
+        }
+
+        // Legacy/Direct component
+        if (iconSource && React.isValidElement(iconSource)) {
+            return iconSource;
+        }
+
+        // Provider icons
+        switch (provider) {
+            case 'google':
+                return <GoogleIcon size={getIconSize()} />;
+            case 'apple':
+                return <AppleIcon size={getIconSize()} color={config.color} />;
+            case 'facebook':
+                return <FacebookIcon size={getIconSize()} color={config.color} />;
+            case 'twitter':
+                return <TwitterIcon size={getIconSize()} color={config.color} />;
+            case 'github':
+                return <GitHubIcon size={getIconSize()} color={config.color} />;
+        }
+    };
+
     return (
         <TouchableOpacity
             style={[
@@ -115,11 +155,7 @@ export const SocialButton: React.FC<SocialButtonProps> = ({
                     iconPosition === 'right' ? { marginLeft: 8, marginRight: 0 } : { marginRight: 8 },
                     iconStyle
                 ]}>
-                    {(typeof icon === 'string' && IconComponent) ? (
-                        <IconComponent name={icon} size={getIconSize()} color={config.color} style={iconStyle} />
-                    ) : (
-                        icon || iconComponent || config.icon
-                    )}
+                    {renderIcon()}
                 </View>
                 <Text style={[styles.label, { fontSize: getFontSize() }, textStyle]}>
                     {label || config.label}

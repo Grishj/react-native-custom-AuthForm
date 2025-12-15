@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { View, ScrollView, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, ScrollView, StyleSheet, KeyboardAvoidingView, Platform, Image } from 'react-native';
 import { AuthFormProps, AuthMode, LogoConfig } from '../types';
 import { Header, Footer, SocialLoginGroup, BiometricButton } from '../ui';
 import { FormikForm } from './strategies/FormikForm';
@@ -30,7 +30,7 @@ const AuthFormContent: React.FC<Omit<AuthFormProps, 'theme' | 'translations'>> =
     onForgotPassword,
     forgotPassword,
     submitButton,
-    IconComponent,
+    iconSource,
     appLogo,
 }) => {
     const [mode, setMode] = useState<AuthMode>(initialMode);
@@ -43,123 +43,127 @@ const AuthFormContent: React.FC<Omit<AuthFormProps, 'theme' | 'translations'>> =
         onModeChange?.(newMode);
     };
 
-    const renderForm = () => {
-        // Merge forgotPassword config with legacy onForgotPassword for backward compatibility
-        const forgotPasswordConfig = forgotPassword || (onForgotPassword ? { enabled: true, onPress: onForgotPassword } : undefined);
+    // Filter social logins to only enabled ones
+    const activeSocialLogins = socialLogins?.filter(login => !login.disabled) || [];
 
-        // Support both new config objects and legacy boolean props
-        const effectiveShowRememberMe = rememberMe?.enabled ?? showRememberMe;
-        const effectiveShowAcceptTerms = acceptTerms?.enabled ?? showAcceptTerms;
+    const StrategyComponent = validationType === 'formik-yup' ? FormikForm : RHFForm;
 
-        const commonProps = {
-            mode,
-            onSubmit,
-            forgotPassword: forgotPasswordConfig,
-            fields,
-            styles: customStyles,
-            isLoading,
-            submitButtonText,
-            showRememberMe: effectiveShowRememberMe,
-            showAcceptTerms: effectiveShowAcceptTerms,
-            rememberMe,
-            acceptTerms,
-            customValidationSchema,
-            apiError,
-            initialValues,
-            submitButton,
-            IconComponent,
-        };
+    // Check if we have a valid logo config
+    const hasLogo = !!appLogo;
+    const hasLegacyLogo = !!header?.logo;
 
-        switch (validationType) {
-            case 'formik-yup':
-                return <FormikForm {...commonProps} />;
-            case 'rhf-yup':
-                return <RHFForm {...commonProps} resolverType="yup" />;
-            case 'rhf-zod':
-                return <RHFForm {...commonProps} resolverType="zod" />;
-            default:
-                return <FormikForm {...commonProps} />;
+    const renderAppLogo = () => {
+        // Prioritize appLogo prop
+        if (hasLogo) {
+            // Config object
+            if (typeof appLogo === 'object' && 'source' in (appLogo as LogoConfig) && !React.isValidElement(appLogo)) {
+                const logoConfig = appLogo as LogoConfig;
+                return (
+                    <View style={[styles.logoContainer, styles.appLogoContainer, logoConfig.style]}>
+                        {React.isValidElement(logoConfig.source) ? (
+                            logoConfig.source
+                        ) : (
+                            <Image
+                                source={logoConfig.source as any}
+                                style={{
+                                    width: logoConfig.width || 120,
+                                    height: logoConfig.height || 120,
+                                    resizeMode: 'contain'
+                                }}
+                            />
+                        )}
+                    </View>
+                );
+            }
+            // Direct component/node
+            return (
+                <View style={[styles.logoContainer, styles.appLogoContainer]}>
+                    {appLogo as React.ReactNode}
+                </View>
+            );
         }
+        return null;
     };
 
-    const socialButtonProps = socialLogins?.map((config) => ({
-        provider: config.provider,
-        onPress: config.onPress,
-        disabled: config.disabled,
-        iconComponent: config.iconComponent,
-        label: config.label,
-        icon: config.icon,
-        iconPosition: config.iconPosition,
-        textStyle: config.textStyle || customStyles?.socialButtonText,
-        iconStyle: config.iconStyle || customStyles?.socialButtonIcon,
-        IconComponent,
-    }));
+    // Merge forgotPassword config
+    const forgotPasswordConfig = forgotPassword || (onForgotPassword ? { enabled: true, onPress: onForgotPassword } : undefined);
 
-    // Use theme colors for default background if no custom style
-    const containerBackground = customStyles?.container?.backgroundColor ?? theme.colors.background;
+    const effectiveShowRememberMe = rememberMe?.enabled ?? showRememberMe;
+    const effectiveShowAcceptTerms = acceptTerms?.enabled ?? showAcceptTerms;
 
     return (
         <KeyboardAvoidingView
-            style={styles.keyboardAvoid}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            style={[styles.keyboardAvoid, customStyles?.container]}
         >
             <ScrollView
-                style={[styles.scrollView, { backgroundColor: containerBackground }]}
-                contentContainerStyle={[styles.container, customStyles?.container]}
-                keyboardShouldPersistTaps="handled"
+                contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
             >
-                {/* App Logo - Separated from Header */}
-                {(appLogo || header?.logo) && (
-                    <View style={[styles.logoContainer, styles.appLogoContainer, customStyles?.logoContainer]}>
-                        {(() => {
-                            const logoToRender = appLogo || header?.logo;
-                            // Check if logo is a LogoConfig object
-                            if (logoToRender && typeof logoToRender === 'object' && 'source' in logoToRender && !React.isValidElement(logoToRender)) {
-                                const { source, size, width, height, style } = logoToRender as LogoConfig;
-                                return (
-                                    <View style={[
-                                        styles.centered,
-                                        { width: width || size, height: height || size },
-                                        style
-                                    ]}>
-                                        {source}
-                                    </View>
-                                );
-                            }
-                            return logoToRender as React.ReactNode;
-                        })()}
+                {/* Independent App Logo */}
+                {renderAppLogo()}
+
+                <Header
+                    title={header?.title || (mode === 'signin' ? t('welcomeBack') : t('createAccount'))}
+                    subtitle={header?.subtitle || (mode === 'signin' ? t('signInToContinue') : t('signUpToGetStarted'))}
+                    logo={!hasLogo && hasLegacyLogo ? header?.logo : undefined}
+                    styles={customStyles}
+                    titleStyle={header?.titleStyle}
+                    subtitleStyle={header?.subtitleStyle}
+                    style={header?.style}
+                />
+
+                <StrategyComponent
+                    mode={mode}
+                    onSubmit={onSubmit}
+                    forgotPassword={{
+                        enabled: mode === 'signin',
+                        onPress: onForgotPassword,
+                        ...forgotPasswordConfig,
+                    }}
+                    fields={fields}
+                    styles={customStyles}
+                    isLoading={isLoading}
+                    submitButtonText={submitButtonText}
+                    submitButton={submitButton}
+                    showRememberMe={effectiveShowRememberMe}
+                    showAcceptTerms={effectiveShowAcceptTerms}
+                    rememberMe={rememberMe}
+                    acceptTerms={acceptTerms}
+                    customValidationSchema={customValidationSchema}
+                    apiError={apiError}
+                    initialValues={initialValues}
+                    resolverType={validationType === 'rhf-zod' ? 'zod' : 'yup'}
+                    iconSource={iconSource}
+                />
+
+                {(biometric?.enabled) && (
+                    <View style={[styles.biometricContainer, customStyles?.biometricButton]}>
+                        <BiometricButton
+                            config={biometric}
+                            textStyle={customStyles?.biometricText}
+                            iconStyle={customStyles?.biometricIcon}
+                            iconSource={iconSource}
+                        />
                     </View>
                 )}
 
-                {header && (
-                    <Header
-                        title={header.title || (mode === 'signin' ? t('welcomeBack') : t('createAccount'))}
-                        subtitle={header.subtitle || (mode === 'signin'
-                            ? t('signIn')
-                            : t('getStarted')
-                        )}
-                        // Legacy: Logo logic handled above, don't pass to Header to avoid double render if separated
-                        styles={customStyles}
-                        titleStyle={header.titleStyle}
-                        subtitleStyle={header.subtitleStyle}
-                        style={header.style}
-                    />
-                )}
-
-                {renderForm()}
-
-                {mode === 'signin' && biometric?.enabled && (
-                    <View style={styles.biometricContainer}>
-                        <BiometricButton config={biometric} IconComponent={IconComponent} />
-                    </View>
-                )}
-
-                {socialButtonProps && socialButtonProps.length > 0 && (
-                    <View style={styles.socialContainer}>
+                {activeSocialLogins.length > 0 && (
+                    <View style={[styles.socialContainer, customStyles?.socialButtonsContainer]}>
                         <SocialLoginGroup
-                            providers={socialButtonProps}
-                            containerStyle={customStyles?.socialButtonsContainer}
+                            providers={activeSocialLogins.map(login => ({
+                                provider: login.provider,
+                                onPress: login.onPress,
+                                disabled: login.disabled || isLoading,
+                                iconSource: login.iconSource || iconSource,
+                                label: login.label,
+                                icon: login.icon,
+                                iconPosition: login.iconPosition,
+                                iconStyle: login.iconStyle || customStyles?.socialButtonIcon,
+                                textStyle: login.textStyle || customStyles?.socialButtonText,
+                                style: styles.socialButton
+                            }))}
                             dividerStyle={customStyles?.divider}
                             dividerTextStyle={customStyles?.dividerText}
                         />
@@ -178,7 +182,6 @@ const AuthFormContent: React.FC<Omit<AuthFormProps, 'theme' | 'translations'>> =
                     onTermsPress={footer?.onTermsPress}
                     onPrivacyPress={footer?.onPrivacyPress}
                     styles={customStyles}
-                    // New simplified API props
                     text={footer?.text}
                     textLink={footer?.textLink}
                     textLinkOnPress={footer?.textLinkOnPress}
@@ -242,6 +245,12 @@ const styles = StyleSheet.create({
     centered: {
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    scrollContent: {
+        flexGrow: 1,
+    },
+    socialButton: {
+        flex: 1,
     },
 });
 

@@ -33,7 +33,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
     iconPosition = 'left',
     iconStyle,
     placeholderStyle,
-    IconComponent,
+    iconSource,
 }) => {
     const { width: screenWidth } = useWindowDimensions();
 
@@ -64,9 +64,10 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
     // Resolve Icons
     const getResolvedIcon = () => {
         if (!icon) return null;
-        if (typeof icon === 'string' && IconComponent) {
+        if (typeof icon === 'string' && iconSource) {
+            const IconSource = iconSource;
             return (
-                <IconComponent
+                <IconSource
                     name={icon}
                     size={getFontSize() + 4}
                     color="#6b7280"

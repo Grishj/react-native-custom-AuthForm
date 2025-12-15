@@ -36,7 +36,7 @@ export interface SocialLoginConfig {
     provider: SocialProvider;
     onPress: () => void | Promise<void>;
     disabled?: boolean;
-    iconComponent?: ReactNode;
+    iconSource?: React.ComponentType<any>;
     label?: string;
     icon?: string | ReactNode;
     iconPosition?: 'left' | 'right';
@@ -58,6 +58,7 @@ export interface BiometricConfig {
     iconStyle?: TextStyle;
     promptStyle?: TextStyle;
     style?: ViewStyle;
+    iconSource?: React.ComponentType<any>;
 }
 
 // ============================================================================
@@ -75,6 +76,7 @@ export interface FieldConfig {
     iconPosition?: 'left' | 'right';
     iconStyle?: TextStyle;
     placeholderStyle?: TextStyle;
+    iconSource?: React.ComponentType<any>;
 }
 
 export interface FieldsConfig {
@@ -301,15 +303,14 @@ export interface InputProps {
     iconPosition?: 'left' | 'right';
     iconStyle?: TextStyle;
     placeholderStyle?: TextStyle;
-    IconComponent?: React.ComponentType<any>;
+    iconSource?: React.ComponentType<any>;
 }
 
 export interface SocialButtonProps {
     provider: SocialProvider;
     onPress: () => void | Promise<void>;
     disabled?: boolean;
-    iconComponent?: ReactNode;
-    IconComponent?: React.ComponentType<any>;
+    iconSource?: React.ComponentType<any>;
     label?: string;
     // New Props
     icon?: string | ReactNode;
@@ -366,7 +367,7 @@ export interface AuthFormProps {
     theme?: Theme;
     /** Custom translations (overrides I18nProvider context) */
     translations?: Translations;
-    IconComponent?: React.ComponentType<any>;
+    iconSource?: React.ComponentType<any>;
 }
 
 // ============================================================================
@@ -394,5 +395,5 @@ export interface FormStrategyProps {
     apiError?: string;
     initialValues?: Partial<AuthFormData>;
     submitButton?: SubmitButtonConfig;
-    IconComponent?: React.ComponentType<any>;
+    iconSource?: React.ComponentType<any>;
 }

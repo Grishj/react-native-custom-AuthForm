@@ -42,7 +42,7 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
     apiError,
     initialValues,
     submitButton,
-    IconComponent,
+    iconSource,
 }) => {
     const validationSchema = customValidationSchema || getYupSchema(mode, fields);
     const defaultValues = { ...getDefaultValues(mode, fields), ...initialValues };
@@ -110,7 +110,7 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
                             iconPosition={fields?.firstName?.iconPosition}
                             iconStyle={fields?.firstName?.iconStyle}
                             placeholderStyle={fields?.firstName?.placeholderStyle}
-                            IconComponent={IconComponent}
+                            iconSource={fields?.firstName?.iconSource || iconSource}
                         />
                     )}
 
@@ -130,7 +130,7 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
                             iconPosition={fields?.lastName?.iconPosition}
                             iconStyle={fields?.lastName?.iconStyle}
                             placeholderStyle={fields?.lastName?.placeholderStyle}
-                            IconComponent={IconComponent}
+                            iconSource={fields?.lastName?.iconSource || iconSource}
                         />
                     )}
 
@@ -150,7 +150,7 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
                             iconPosition={fields?.username?.iconPosition}
                             iconStyle={fields?.username?.iconStyle}
                             placeholderStyle={fields?.username?.placeholderStyle}
-                            IconComponent={IconComponent}
+                            iconSource={fields?.username?.iconSource || iconSource}
                         />
                     )}
 
@@ -172,7 +172,7 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
                             iconPosition={fields?.email?.iconPosition}
                             iconStyle={fields?.email?.iconStyle}
                             placeholderStyle={fields?.email?.placeholderStyle}
-                            IconComponent={IconComponent}
+                            iconSource={fields?.email?.iconSource || iconSource}
                         />
                     )}
 
@@ -192,7 +192,7 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
                             iconPosition={fields?.phone?.iconPosition}
                             iconStyle={fields?.phone?.iconStyle}
                             placeholderStyle={fields?.phone?.placeholderStyle}
-                            IconComponent={IconComponent}
+                            iconSource={fields?.phone?.iconSource || iconSource}
                         />
                     )}
 
@@ -213,7 +213,7 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
                             iconPosition={fields?.password?.iconPosition}
                             iconStyle={fields?.password?.iconStyle}
                             placeholderStyle={fields?.password?.placeholderStyle}
-                            IconComponent={IconComponent}
+                            iconSource={fields?.password?.iconSource || iconSource}
                         />
                     )}
 
@@ -243,7 +243,7 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
                             iconPosition={fields?.confirmPassword?.iconPosition}
                             iconStyle={fields?.confirmPassword?.iconStyle}
                             placeholderStyle={fields?.confirmPassword?.placeholderStyle}
-                            IconComponent={IconComponent}
+                            iconSource={fields?.confirmPassword?.iconSource || iconSource}
                         />
                     )}
 

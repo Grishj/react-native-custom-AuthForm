@@ -17,7 +17,7 @@ interface BiometricButtonProps {
     style?: ViewStyle;
     textStyle?: TextStyle;
     iconStyle?: ViewStyle;
-    IconComponent?: React.ComponentType<any>;
+    iconSource?: React.ComponentType<any>;
 }
 
 export const BiometricButton: React.FC<BiometricButtonProps> = ({
@@ -25,7 +25,7 @@ export const BiometricButton: React.FC<BiometricButtonProps> = ({
     style,
     textStyle,
     iconStyle,
-    IconComponent,
+    iconSource,
 }) => {
     const { width: screenWidth } = useWindowDimensions();
     const [isAuthenticating, setIsAuthenticating] = useState(false);
@@ -70,9 +70,10 @@ export const BiometricButton: React.FC<BiometricButtonProps> = ({
 
         // Custom icon from config
         if (icon) {
-            if (typeof icon === 'string' && IconComponent) {
+            const ActiveIconComponent = config.iconSource || iconSource;
+            if (typeof icon === 'string' && ActiveIconComponent) {
                 return (
-                    <IconComponent
+                    <ActiveIconComponent
                         name={icon}
                         size={iconSize}
                         color="#6366f1"

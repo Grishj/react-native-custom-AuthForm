@@ -49,7 +49,7 @@ export const RHFForm: React.FC<RHFFormProps> = ({
     initialValues,
     resolverType,
     submitButton,
-    IconComponent,
+    iconSource,
 }) => {
     const getResolver = (): any => {
         if (customValidationSchema) {
@@ -130,7 +130,7 @@ export const RHFForm: React.FC<RHFFormProps> = ({
                             iconPosition={fields?.firstName?.iconPosition}
                             iconStyle={fields?.firstName?.iconStyle}
                             placeholderStyle={fields?.firstName?.placeholderStyle}
-                            IconComponent={IconComponent}
+                            iconSource={fields?.firstName?.iconSource || iconSource}
                         />
                     )}
                 />
@@ -157,7 +157,7 @@ export const RHFForm: React.FC<RHFFormProps> = ({
                             iconPosition={fields?.lastName?.iconPosition}
                             iconStyle={fields?.lastName?.iconStyle}
                             placeholderStyle={fields?.lastName?.placeholderStyle}
-                            IconComponent={IconComponent}
+                            iconSource={fields?.lastName?.iconSource || iconSource}
                         />
                     )}
                 />
@@ -184,7 +184,7 @@ export const RHFForm: React.FC<RHFFormProps> = ({
                             iconPosition={fields?.username?.iconPosition}
                             iconStyle={fields?.username?.iconStyle}
                             placeholderStyle={fields?.username?.placeholderStyle}
-                            IconComponent={IconComponent}
+                            iconSource={fields?.username?.iconSource || iconSource}
                         />
                     )}
                 />
@@ -213,7 +213,7 @@ export const RHFForm: React.FC<RHFFormProps> = ({
                             iconPosition={fields?.email?.iconPosition}
                             iconStyle={fields?.email?.iconStyle}
                             placeholderStyle={fields?.email?.placeholderStyle}
-                            IconComponent={IconComponent}
+                            iconSource={fields?.email?.iconSource || iconSource}
                         />
                     )}
                 />
@@ -240,7 +240,7 @@ export const RHFForm: React.FC<RHFFormProps> = ({
                             iconPosition={fields?.phone?.iconPosition}
                             iconStyle={fields?.phone?.iconStyle}
                             placeholderStyle={fields?.phone?.placeholderStyle}
-                            IconComponent={IconComponent}
+                            iconSource={fields?.phone?.iconSource || iconSource}
                         />
                     )}
                 />
@@ -268,7 +268,7 @@ export const RHFForm: React.FC<RHFFormProps> = ({
                             iconPosition={fields?.password?.iconPosition}
                             iconStyle={fields?.password?.iconStyle}
                             placeholderStyle={fields?.password?.placeholderStyle}
-                            IconComponent={IconComponent}
+                            iconSource={fields?.password?.iconSource || iconSource}
                         />
                     )}
                 />
@@ -306,7 +306,7 @@ export const RHFForm: React.FC<RHFFormProps> = ({
                             iconPosition={fields?.confirmPassword?.iconPosition}
                             iconStyle={fields?.confirmPassword?.iconStyle}
                             placeholderStyle={fields?.confirmPassword?.placeholderStyle}
-                            IconComponent={IconComponent}
+                            iconSource={fields?.confirmPassword?.iconSource || iconSource}
                         />
                     )}
                 />

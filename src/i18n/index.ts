@@ -9,6 +9,8 @@ export interface Translations {
     createAccount: string;
     welcomeBack: string;
     getStarted: string;
+    signInToContinue: string;
+    signUpToGetStarted: string;
 
     // Field labels
     email: string;
@@ -100,6 +102,8 @@ export const defaultEnTranslations: Translations = {
     createAccount: 'Create Account',
     welcomeBack: 'Welcome Back',
     getStarted: 'Get Started',
+    signInToContinue: 'Sign in to continue',
+    signUpToGetStarted: 'Sign up to get started',
 
     // Field labels
     email: 'Email',
