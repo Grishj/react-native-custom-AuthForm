@@ -14,6 +14,9 @@ export const Header: React.FC<HeaderProps> = ({
     subtitle,
     logo,
     styles: customStyles,
+    titleStyle,
+    subtitleStyle,
+    style,
 }) => {
     const { width: screenWidth } = useWindowDimensions();
 
@@ -68,7 +71,7 @@ export const Header: React.FC<HeaderProps> = ({
     };
 
     return (
-        <View style={[styles.container, customStyles?.header]}>
+        <View style={[styles.container, customStyles?.header, style]}>
             {renderLogo()}
 
             {title && (
@@ -76,7 +79,8 @@ export const Header: React.FC<HeaderProps> = ({
                     style={[
                         styles.title,
                         { fontSize: getResponsiveTitleSize() },
-                        customStyles?.headerTitle
+                        customStyles?.headerTitle,
+                        titleStyle,
                     ]}
                     numberOfLines={2}
                     adjustsFontSizeToFit={isSmallScreen}
@@ -90,7 +94,8 @@ export const Header: React.FC<HeaderProps> = ({
                     style={[
                         styles.subtitle,
                         { fontSize: getResponsiveSubtitleSize() },
-                        customStyles?.headerSubtitle
+                        customStyles?.headerSubtitle,
+                        subtitleStyle,
                     ]}
                     numberOfLines={3}
                 >

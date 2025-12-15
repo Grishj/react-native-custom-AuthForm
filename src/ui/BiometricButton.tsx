@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, isValidElement } from 'react';
 import {
     View,
     Text,
@@ -6,18 +6,26 @@ import {
     TouchableOpacity,
     Platform,
     useWindowDimensions,
+    ViewStyle,
+    TextStyle,
 } from 'react-native';
 import { FingerprintIcon, FaceIdIcon } from './Icons';
 import { BiometricConfig } from '../types';
 
 interface BiometricButtonProps {
     config: BiometricConfig;
-    style?: any;
+    style?: ViewStyle;
+    textStyle?: TextStyle;
+    iconStyle?: ViewStyle;
+    IconComponent?: React.ComponentType<any>;
 }
 
 export const BiometricButton: React.FC<BiometricButtonProps> = ({
     config,
     style,
+    textStyle,
+    iconStyle,
+    IconComponent,
 }) => {
     const { width: screenWidth } = useWindowDimensions();
     const [isAuthenticating, setIsAuthenticating] = useState(false);
@@ -57,10 +65,29 @@ export const BiometricButton: React.FC<BiometricButtonProps> = ({
     };
 
     const getBiometricIcon = () => {
-        const type = config.type || (Platform.OS === 'ios' ? 'faceId' : 'fingerprint');
+        const { icon, type } = config;
         const iconSize = getIconSize();
 
-        if (type === 'faceId') {
+        // Custom icon from config
+        if (icon) {
+            if (typeof icon === 'string' && IconComponent) {
+                return (
+                    <IconComponent
+                        name={icon}
+                        size={iconSize}
+                        color="#6366f1"
+                        style={config.iconStyle}
+                    />
+                );
+            }
+            if (isValidElement(icon)) {
+                return icon;
+            }
+        }
+
+        const resolveType = type || (Platform.OS === 'ios' ? 'faceId' : 'fingerprint');
+
+        if (resolveType === 'faceId') {
             return <FaceIdIcon size={iconSize} color="#6366f1" />;
         }
         return <FingerprintIcon size={iconSize} color="#6366f1" />;
@@ -84,6 +111,7 @@ export const BiometricButton: React.FC<BiometricButtonProps> = ({
                 styles.container,
                 getPadding(),
                 { borderRadius: isSmallScreen ? 10 : 12 },
+                config.style,
                 style,
                 isAuthenticating && styles.authenticating
             ]}
@@ -91,20 +119,32 @@ export const BiometricButton: React.FC<BiometricButtonProps> = ({
             disabled={isAuthenticating}
             activeOpacity={0.7}
         >
-            <View style={[styles.iconContainer, { marginRight: isSmallScreen ? 8 : 12 }]}>
-                {getBiometricIcon()}
+            <View style={[
+                styles.contentContainer,
+                { flexDirection: config.iconPosition === 'right' ? 'row-reverse' : 'row' }
+            ]}>
+                <View style={[
+                    styles.iconContainer,
+                    config.iconPosition === 'right' ? { marginLeft: isSmallScreen ? 8 : 12 } : { marginRight: isSmallScreen ? 8 : 12 },
+                    iconStyle
+                ]}>
+                    {getBiometricIcon()}
+                </View>
+                <Text style={[styles.label, { fontSize: getFontSize() }, textStyle, config.promptStyle]}>
+                    {config.promptMessage || getBiometricLabel()}
+                </Text>
             </View>
-            <Text style={[styles.label, { fontSize: getFontSize() }]}>
-                {config.promptMessage || getBiometricLabel()}
-            </Text>
         </TouchableOpacity>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
+    contentContainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
+    },
+    container: {
         justifyContent: 'center',
         paddingVertical: 16,
         paddingHorizontal: 24,
@@ -118,7 +158,7 @@ const styles = StyleSheet.create({
         opacity: 0.6,
     },
     iconContainer: {
-        marginRight: 12,
+        // marginRight handled dynamically
     },
     label: {
         fontSize: 15,

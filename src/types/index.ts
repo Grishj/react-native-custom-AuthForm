@@ -38,6 +38,10 @@ export interface SocialLoginConfig {
     disabled?: boolean;
     iconComponent?: ReactNode;
     label?: string;
+    icon?: string | ReactNode;
+    iconPosition?: 'left' | 'right';
+    iconStyle?: TextStyle;
+    textStyle?: TextStyle;
 }
 
 // ============================================================================
@@ -49,6 +53,11 @@ export interface BiometricConfig {
     type?: 'fingerprint' | 'faceId' | 'both';
     onAuthenticate: () => void | Promise<void>;
     promptMessage?: string;
+    icon?: string | ReactNode;
+    iconPosition?: 'left' | 'right';
+    iconStyle?: TextStyle;
+    promptStyle?: TextStyle;
+    style?: ViewStyle;
 }
 
 // ============================================================================
@@ -62,6 +71,10 @@ export interface FieldConfig {
     required?: boolean;
     visible?: boolean;
     inputProps?: Partial<TextInputProps>;
+    icon?: string | ReactNode;
+    iconPosition?: 'left' | 'right';
+    iconStyle?: TextStyle;
+    placeholderStyle?: TextStyle;
 }
 
 export interface FieldsConfig {
@@ -120,6 +133,7 @@ export interface SubmitButtonConfig {
         disabled?: boolean;
         title: string;
     }) => ReactNode;
+    onPress?: () => void;
     text?: string;
     style?: ViewStyle;
     textStyle?: TextStyle;
@@ -209,6 +223,16 @@ export interface AuthFormStyles {
     socialButton?: ViewStyle;
     divider?: ViewStyle;
     dividerText?: TextStyle;
+    biometricButton?: ViewStyle;
+    biometricIcon?: ViewStyle;
+    biometricText?: TextStyle;
+    forgotPasswordContainer?: ViewStyle;
+    forgotPasswordText?: TextStyle;
+    socialButtonText?: TextStyle;
+    socialButtonIcon?: ViewStyle;
+    checkboxRow?: ViewStyle;
+    checkboxLabel?: TextStyle;
+    checkboxLink?: TextStyle;
 }
 
 // ============================================================================
@@ -228,6 +252,9 @@ export interface HeaderProps {
     subtitle?: string;
     logo?: ReactNode | LogoConfig;
     styles?: Pick<AuthFormStyles, 'header' | 'headerTitle' | 'headerSubtitle' | 'logoContainer'>;
+    titleStyle?: TextStyle;
+    subtitleStyle?: TextStyle;
+    style?: ViewStyle;
 }
 
 export interface FooterProps {
@@ -246,8 +273,10 @@ export interface FooterProps {
     text?: string;
     textLink?: string;
     textLinkOnPress?: () => void;
+    textPlaceHolder?: string;
     textStyle?: TextStyle;
     textLinkStyle?: TextStyle;
+    style?: ViewStyle;
 }
 
 export interface InputProps {
@@ -267,6 +296,12 @@ export interface InputProps {
     leftIcon?: ReactNode;
     rightIcon?: ReactNode;
     disabled?: boolean;
+    // New Props
+    icon?: string | ReactNode;
+    iconPosition?: 'left' | 'right';
+    iconStyle?: TextStyle;
+    placeholderStyle?: TextStyle;
+    IconComponent?: React.ComponentType<any>;
 }
 
 export interface SocialButtonProps {
@@ -274,7 +309,13 @@ export interface SocialButtonProps {
     onPress: () => void | Promise<void>;
     disabled?: boolean;
     iconComponent?: ReactNode;
+    IconComponent?: React.ComponentType<any>;
     label?: string;
+    // New Props
+    icon?: string | ReactNode;
+    iconPosition?: 'left' | 'right';
+    iconStyle?: TextStyle;
+    textStyle?: TextStyle;
     style?: ViewStyle;
 }
 
@@ -287,10 +328,16 @@ export interface AuthFormProps {
     validationType: ValidationType;
     onSubmit: (data: AuthFormData) => void | Promise<void>;
     onModeChange?: (mode: AuthMode) => void;
+    /** Main application logo, rendered above the header */
+    appLogo?: ReactNode | LogoConfig;
     header?: {
         title?: string;
         subtitle?: string;
+        /** @deprecated Use appLogo top-level prop instead */
         logo?: ReactNode | LogoConfig;
+        titleStyle?: TextStyle;
+        subtitleStyle?: TextStyle;
+        style?: ViewStyle;
     };
     footer?: Partial<Omit<FooterProps, 'mode'>>;
     fields?: FieldsConfig;
@@ -319,6 +366,7 @@ export interface AuthFormProps {
     theme?: Theme;
     /** Custom translations (overrides I18nProvider context) */
     translations?: Translations;
+    IconComponent?: React.ComponentType<any>;
 }
 
 // ============================================================================
@@ -346,4 +394,5 @@ export interface FormStrategyProps {
     apiError?: string;
     initialValues?: Partial<AuthFormData>;
     submitButton?: SubmitButtonConfig;
+    IconComponent?: React.ComponentType<any>;
 }

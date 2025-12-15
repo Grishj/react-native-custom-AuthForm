@@ -20,6 +20,7 @@ export const Footer: React.FC<FooterProps> = ({
     textLinkOnPress,
     textStyle,
     textLinkStyle,
+    style,
 }) => {
     const { width: screenWidth } = useWindowDimensions();
     const isSmallScreen = screenWidth < 375;
@@ -33,7 +34,7 @@ export const Footer: React.FC<FooterProps> = ({
     const handleLinkPress = textLinkOnPress || onToggleMode;
 
     return (
-        <View style={[styles.container, { marginTop: isSmallScreen ? 16 : 24 }, customStyles?.footer]}>
+        <View style={[styles.container, { marginTop: isSmallScreen ? 16 : 24 }, customStyles?.footer, style]}>
             {/* Toggle Mode / Custom Footer Text */}
             {handleLinkPress && (
                 <View style={[styles.toggleContainer, { marginBottom: isSmallScreen ? 12 : 16 }]}>

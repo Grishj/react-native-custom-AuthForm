@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Formik, FormikHelpers } from 'formik';
 import { FormStrategyProps, AuthFormData, PhoneFieldConfig, FieldsConfig } from '../../types';
 import { getYupSchema } from '../../utils/validationSchemas';
-import { Input, PhoneInput, SubmitButton, Checkbox, MailIcon, LockIcon, UserIcon } from '../../ui';
+import { Input, PhoneInput, SubmitButton, Checkbox, MailIcon, LockIcon, UserIcon, PhoneIcon } from '../../ui';
 
 const getDefaultValues = (mode: 'signin' | 'signup', fieldsConfig?: FieldsConfig): AuthFormData => ({
     email: '',
@@ -42,6 +42,7 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
     apiError,
     initialValues,
     submitButton,
+    IconComponent,
 }) => {
     const validationSchema = customValidationSchema || getYupSchema(mode, fields);
     const defaultValues = { ...getDefaultValues(mode, fields), ...initialValues };
@@ -52,6 +53,7 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
     ) => {
         try {
             await onSubmit(values);
+            helpers.resetForm();
         } catch (error) {
             helpers.setSubmitting(false);
         }
@@ -104,7 +106,11 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
                             touched={touched.firstName}
                             autoCapitalize="words"
                             styles={customStyles}
-                            leftIcon={<UserIcon size={20} color="#9ca3af" />}
+                            icon={fields?.firstName?.icon || <UserIcon size={20} color="#9ca3af" />}
+                            iconPosition={fields?.firstName?.iconPosition}
+                            iconStyle={fields?.firstName?.iconStyle}
+                            placeholderStyle={fields?.firstName?.placeholderStyle}
+                            IconComponent={IconComponent}
                         />
                     )}
 
@@ -120,7 +126,11 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
                             touched={touched.lastName}
                             autoCapitalize="words"
                             styles={customStyles}
-                            leftIcon={<UserIcon size={20} color="#9ca3af" />}
+                            icon={fields?.lastName?.icon || <UserIcon size={20} color="#9ca3af" />}
+                            iconPosition={fields?.lastName?.iconPosition}
+                            iconStyle={fields?.lastName?.iconStyle}
+                            placeholderStyle={fields?.lastName?.placeholderStyle}
+                            IconComponent={IconComponent}
                         />
                     )}
 
@@ -136,6 +146,11 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
                             touched={touched.username}
                             autoCapitalize="none"
                             styles={customStyles}
+                            icon={fields?.username?.icon || <UserIcon size={20} color="#9ca3af" />}
+                            iconPosition={fields?.username?.iconPosition}
+                            iconStyle={fields?.username?.iconStyle}
+                            placeholderStyle={fields?.username?.placeholderStyle}
+                            IconComponent={IconComponent}
                         />
                     )}
 
@@ -153,7 +168,11 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
                             autoCapitalize="none"
                             autoComplete="email"
                             styles={customStyles}
-                            leftIcon={<MailIcon size={20} color="#9ca3af" />}
+                            icon={fields?.email?.icon || <MailIcon size={20} color="#9ca3af" />}
+                            iconPosition={fields?.email?.iconPosition}
+                            iconStyle={fields?.email?.iconStyle}
+                            placeholderStyle={fields?.email?.placeholderStyle}
+                            IconComponent={IconComponent}
                         />
                     )}
 
@@ -169,6 +188,11 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
                             touched={touched.phone}
                             styles={customStyles}
                             phoneConfig={fields?.phone as PhoneFieldConfig}
+                            icon={fields?.phone?.icon || <PhoneIcon size={20} color="#9ca3af" />}
+                            iconPosition={fields?.phone?.iconPosition}
+                            iconStyle={fields?.phone?.iconStyle}
+                            placeholderStyle={fields?.phone?.placeholderStyle}
+                            IconComponent={IconComponent}
                         />
                     )}
 
@@ -185,7 +209,11 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
                             secureTextEntry
                             autoComplete="password"
                             styles={customStyles}
-                            leftIcon={<LockIcon size={20} color="#9ca3af" />}
+                            icon={fields?.password?.icon || <LockIcon size={20} color="#9ca3af" />}
+                            iconPosition={fields?.password?.iconPosition}
+                            iconStyle={fields?.password?.iconStyle}
+                            placeholderStyle={fields?.password?.placeholderStyle}
+                            IconComponent={IconComponent}
                         />
                     )}
 
@@ -211,7 +239,11 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
                             touched={touched.confirmPassword}
                             secureTextEntry
                             styles={customStyles}
-                            leftIcon={<LockIcon size={20} color="#9ca3af" />}
+                            icon={fields?.confirmPassword?.icon || <LockIcon size={20} color="#9ca3af" />}
+                            iconPosition={fields?.confirmPassword?.iconPosition}
+                            iconStyle={fields?.confirmPassword?.iconStyle}
+                            placeholderStyle={fields?.confirmPassword?.placeholderStyle}
+                            IconComponent={IconComponent}
                         />
                     )}
 
@@ -241,8 +273,8 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
                                 checkboxStyle={acceptTerms?.checkboxStyle}
                                 checkboxCheckedStyle={acceptTerms?.checkboxCheckedStyle}
                                 checkmarkColor={acceptTerms?.checkmarkColor}
-                                labelStyle={acceptTerms?.labelStyle}
-                                linkStyle={acceptTerms?.linkStyle}
+                                labelStyle={acceptTerms?.labelStyle || customStyles?.checkboxLabel}
+                                linkStyle={acceptTerms?.linkStyle || customStyles?.checkboxLink}
                             />
                             {touched.acceptTerms && errors.acceptTerms && (
                                 <Text style={styles.checkboxError}>{errors.acceptTerms}</Text>
@@ -253,14 +285,20 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
                     <View style={styles.submitContainer}>
                         {submitButton?.component ? (
                             submitButton.component({
-                                onPress: () => formikSubmit(),
+                                onPress: () => {
+                                    submitButton.onPress?.();
+                                    formikSubmit();
+                                },
                                 isLoading: isLoading || isSubmitting,
                                 disabled: isLoading || isSubmitting,
                                 title: submitButton?.text || submitButtonText || (mode === 'signin' ? 'Sign In' : 'Create Account'),
                             })
                         ) : (
                             <SubmitButton
-                                onPress={() => formikSubmit()}
+                                onPress={() => {
+                                    submitButton?.onPress?.();
+                                    formikSubmit();
+                                }}
                                 title={
                                     submitButton?.text || submitButtonText ||
                                     (mode === 'signin' ? 'Sign In' : 'Create Account')

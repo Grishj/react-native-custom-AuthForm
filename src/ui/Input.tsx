@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, isValidElement } from 'react';
 import {
     View,
     Text,
@@ -24,14 +24,16 @@ export const Input: React.FC<InputProps> = ({
     autoCapitalize = 'none',
     autoComplete,
     styles: customStyles,
-    leftIcon,
-    rightIcon,
+    leftIcon: explicitLeftIcon,
+    rightIcon: explicitRightIcon,
     disabled = false,
+    icon,
+    iconPosition = 'left',
+    iconStyle,
+    placeholderStyle,
+    IconComponent,
 }) => {
     const { width: screenWidth } = useWindowDimensions();
-    const [isFocused, setIsFocused] = useState(false);
-    const [secureTextEntry, setSecureTextEntry] = useState(initialSecureTextEntry);
-    const showError = touched && error;
 
     // Responsive sizing
     const isSmallScreen = screenWidth < 375;
@@ -53,6 +55,35 @@ export const Input: React.FC<InputProps> = ({
         if (isSmallScreen) return 12;
         return 14;
     };
+    const [isFocused, setIsFocused] = useState(false);
+    const [secureTextEntry, setSecureTextEntry] = useState(initialSecureTextEntry);
+    const showError = touched && error;
+
+    // Resolve Icons
+    const getResolvedIcon = () => {
+        if (!icon) return null;
+        if (typeof icon === 'string' && IconComponent) {
+            return (
+                <IconComponent
+                    name={icon}
+                    size={getFontSize() + 4}
+                    color="#6b7280"
+                    style={iconStyle}
+                />
+            );
+        }
+        if (isValidElement(icon)) return icon;
+        return null;
+    };
+
+    const resolvedIcon = getResolvedIcon();
+    const isIconLeft = iconPosition === 'left';
+
+    // Combine explicit icons with resolved icon based on position
+    const leftIcon = explicitLeftIcon || (isIconLeft ? resolvedIcon : null);
+    const rightIcon = explicitRightIcon || (!isIconLeft ? resolvedIcon : null);
+
+
 
     const handleFocus = () => setIsFocused(true);
 
@@ -97,15 +128,17 @@ export const Input: React.FC<InputProps> = ({
                 )}
 
                 <TextInput
+
+                    placeholder={placeholder}
+                    placeholderTextColor={placeholderStyle?.color || "#9ca3af"}
                     style={[
                         styles.input,
                         { fontSize: getFontSize() },
                         customStyles?.input,
                         leftIcon ? styles.inputWithLeftIcon : undefined,
                         (rightIcon || initialSecureTextEntry) ? styles.inputWithRightIcon : undefined,
+                        placeholderStyle
                     ]}
-                    placeholder={placeholder}
-                    placeholderTextColor="#9ca3af"
                     value={value}
                     onChangeText={onChangeText}
                     onFocus={handleFocus}

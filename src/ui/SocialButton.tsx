@@ -1,5 +1,4 @@
-import React from 'react';
-import { TouchableOpacity, Text, View, StyleSheet, ViewStyle, useWindowDimensions } from 'react-native';
+import { TouchableOpacity, Text, View, StyleSheet, ViewStyle, useWindowDimensions, TextStyle } from 'react-native';
 import { SocialButtonProps, SocialProvider } from '../types';
 import { GoogleIcon, AppleIcon, FacebookIcon, TwitterIcon, GitHubIcon } from './Icons';
 
@@ -44,6 +43,11 @@ export const SocialButton: React.FC<SocialButtonProps> = ({
     iconComponent,
     label,
     style,
+    textStyle,
+    iconStyle,
+    icon,
+    iconPosition = 'left',
+    IconComponent,
 }) => {
     const { width: screenWidth } = useWindowDimensions();
 
@@ -101,12 +105,26 @@ export const SocialButton: React.FC<SocialButtonProps> = ({
             activeOpacity={0.7}
             testID={`social-${provider}`}
         >
-            <View style={[styles.iconContainer, { width: getIconSize(), height: getIconSize() }]}>
-                {iconComponent || config.icon}
+            <View style={{
+                flexDirection: iconPosition === 'right' ? 'row-reverse' : 'row',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}>
+                <View style={[
+                    styles.iconContainer,
+                    iconPosition === 'right' ? { marginLeft: 8, marginRight: 0 } : { marginRight: 8 },
+                    iconStyle
+                ]}>
+                    {(typeof icon === 'string' && IconComponent) ? (
+                        <IconComponent name={icon} size={getIconSize()} color={config.color} style={iconStyle} />
+                    ) : (
+                        icon || iconComponent || config.icon
+                    )}
+                </View>
+                <Text style={[styles.label, { fontSize: getFontSize() }, textStyle]}>
+                    {label || config.label}
+                </Text>
             </View>
-            <Text style={[styles.label, { fontSize: getFontSize() }]}>
-                {label || config.label}
-            </Text>
         </TouchableOpacity>
     );
 };
@@ -115,12 +133,16 @@ interface SocialLoginGroupProps {
     providers: SocialButtonProps[];
     containerStyle?: ViewStyle;
     dividerText?: string;
+    dividerStyle?: ViewStyle;
+    dividerTextStyle?: TextStyle;
 }
 
 export const SocialLoginGroup: React.FC<SocialLoginGroupProps> = ({
     providers,
     containerStyle,
     dividerText = 'or continue with',
+    dividerStyle,
+    dividerTextStyle,
 }) => {
     const { width: screenWidth } = useWindowDimensions();
     const isSmallScreen = screenWidth < 375;
@@ -129,9 +151,9 @@ export const SocialLoginGroup: React.FC<SocialLoginGroupProps> = ({
 
     return (
         <View style={[styles.container, containerStyle]}>
-            <View style={styles.divider}>
+            <View style={[styles.divider, dividerStyle]}>
                 <View style={styles.dividerLine} />
-                <Text style={[styles.dividerText, { fontSize: isSmallScreen ? 12 : 14 }]}>
+                <Text style={[styles.dividerText, { fontSize: isSmallScreen ? 12 : 14 }, dividerTextStyle]}>
                     {dividerText}
                 </Text>
                 <View style={styles.dividerLine} />

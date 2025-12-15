@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FormStrategyProps, AuthFormData, ValidationType, PhoneFieldConfig, FieldsConfig } from '../../types';
 import { getYupSchema, getZodSchema } from '../../utils/validationSchemas';
-import { Input, PhoneInput, SubmitButton, Checkbox, MailIcon, LockIcon, UserIcon } from '../../ui';
+import { Input, PhoneInput, SubmitButton, Checkbox, MailIcon, LockIcon, UserIcon, PhoneIcon } from '../../ui';
 
 interface RHFFormProps extends FormStrategyProps {
     resolverType: 'yup' | 'zod';
@@ -49,6 +49,7 @@ export const RHFForm: React.FC<RHFFormProps> = ({
     initialValues,
     resolverType,
     submitButton,
+    IconComponent,
 }) => {
     const getResolver = (): any => {
         if (customValidationSchema) {
@@ -65,12 +66,19 @@ export const RHFForm: React.FC<RHFFormProps> = ({
     const {
         control,
         handleSubmit,
-        formState: { errors, isSubmitting, touchedFields },
+        reset,
+        formState: { errors, isSubmitting, touchedFields, isSubmitted },
     } = useForm<AuthFormData>({
         resolver: getResolver(),
         defaultValues: { ...getDefaultValues(mode, fields), ...initialValues },
         mode: 'onBlur',
     });
+
+    // Re-initialize form when configuration changes
+    useEffect(() => {
+        const newDefaultValues = { ...getDefaultValues(mode, fields), ...initialValues };
+        reset(newDefaultValues);
+    }, [mode, fields, initialValues, resolverType, reset]);
 
     const isFieldVisible = (fieldName: keyof AuthFormData): boolean => {
         const fieldConfig = fields?.[fieldName as keyof typeof fields];
@@ -87,6 +95,7 @@ export const RHFForm: React.FC<RHFFormProps> = ({
     const onFormSubmit = async (data: AuthFormData) => {
         try {
             await onSubmit(data);
+            reset(getDefaultValues(mode, fields));
         } catch (error) {
             // Error handling is done by parent
         }
@@ -114,10 +123,14 @@ export const RHFForm: React.FC<RHFFormProps> = ({
                             onChangeText={onChange}
                             onBlur={onBlur}
                             error={errors.firstName?.message}
-                            touched={touchedFields.firstName}
+                            touched={touchedFields.firstName || isSubmitted}
                             autoCapitalize="words"
                             styles={customStyles}
-                            leftIcon={<UserIcon size={20} color="#9ca3af" />}
+                            icon={fields?.firstName?.icon || <UserIcon size={20} color="#9ca3af" />}
+                            iconPosition={fields?.firstName?.iconPosition}
+                            iconStyle={fields?.firstName?.iconStyle}
+                            placeholderStyle={fields?.firstName?.placeholderStyle}
+                            IconComponent={IconComponent}
                         />
                     )}
                 />
@@ -137,10 +150,14 @@ export const RHFForm: React.FC<RHFFormProps> = ({
                             onChangeText={onChange}
                             onBlur={onBlur}
                             error={errors.lastName?.message}
-                            touched={touchedFields.lastName}
+                            touched={touchedFields.lastName || isSubmitted}
                             autoCapitalize="words"
                             styles={customStyles}
-                            leftIcon={<UserIcon size={20} color="#9ca3af" />}
+                            icon={fields?.lastName?.icon || <UserIcon size={20} color="#9ca3af" />}
+                            iconPosition={fields?.lastName?.iconPosition}
+                            iconStyle={fields?.lastName?.iconStyle}
+                            placeholderStyle={fields?.lastName?.placeholderStyle}
+                            IconComponent={IconComponent}
                         />
                     )}
                 />
@@ -160,10 +177,14 @@ export const RHFForm: React.FC<RHFFormProps> = ({
                             onChangeText={onChange}
                             onBlur={onBlur}
                             error={errors.username?.message}
-                            touched={touchedFields.username}
+                            touched={touchedFields.username || isSubmitted}
                             autoCapitalize="none"
                             styles={customStyles}
-                            leftIcon={<UserIcon size={20} color="#9ca3af" />}
+                            icon={fields?.username?.icon || <UserIcon size={20} color="#9ca3af" />}
+                            iconPosition={fields?.username?.iconPosition}
+                            iconStyle={fields?.username?.iconStyle}
+                            placeholderStyle={fields?.username?.placeholderStyle}
+                            IconComponent={IconComponent}
                         />
                     )}
                 />
@@ -183,12 +204,16 @@ export const RHFForm: React.FC<RHFFormProps> = ({
                             onChangeText={onChange}
                             onBlur={onBlur}
                             error={errors.email?.message}
-                            touched={touchedFields.email}
+                            touched={touchedFields.email || isSubmitted}
                             keyboardType="email-address"
                             autoCapitalize="none"
                             autoComplete="email"
                             styles={customStyles}
-                            leftIcon={<MailIcon size={20} color="#9ca3af" />}
+                            icon={fields?.email?.icon || <MailIcon size={20} color="#9ca3af" />}
+                            iconPosition={fields?.email?.iconPosition}
+                            iconStyle={fields?.email?.iconStyle}
+                            placeholderStyle={fields?.email?.placeholderStyle}
+                            IconComponent={IconComponent}
                         />
                     )}
                 />
@@ -208,9 +233,14 @@ export const RHFForm: React.FC<RHFFormProps> = ({
                             onChangeText={onChange}
                             onBlur={onBlur}
                             error={errors.phone?.message}
-                            touched={touchedFields.phone}
+                            touched={touchedFields.phone || isSubmitted}
                             styles={customStyles}
                             phoneConfig={fields?.phone as PhoneFieldConfig}
+                            icon={fields?.phone?.icon || <PhoneIcon size={20} color="#9ca3af" />}
+                            iconPosition={fields?.phone?.iconPosition}
+                            iconStyle={fields?.phone?.iconStyle}
+                            placeholderStyle={fields?.phone?.placeholderStyle}
+                            IconComponent={IconComponent}
                         />
                     )}
                 />
@@ -230,11 +260,15 @@ export const RHFForm: React.FC<RHFFormProps> = ({
                             onChangeText={onChange}
                             onBlur={onBlur}
                             error={errors.password?.message}
-                            touched={touchedFields.password}
+                            touched={touchedFields.password || isSubmitted}
                             secureTextEntry
                             autoComplete="password"
                             styles={customStyles}
-                            leftIcon={<LockIcon size={20} color="#9ca3af" />}
+                            icon={fields?.password?.icon || <LockIcon size={20} color="#9ca3af" />}
+                            iconPosition={fields?.password?.iconPosition}
+                            iconStyle={fields?.password?.iconStyle}
+                            placeholderStyle={fields?.password?.placeholderStyle}
+                            IconComponent={IconComponent}
                         />
                     )}
                 />
@@ -265,10 +299,14 @@ export const RHFForm: React.FC<RHFFormProps> = ({
                             onChangeText={onChange}
                             onBlur={onBlur}
                             error={errors.confirmPassword?.message}
-                            touched={touchedFields.confirmPassword}
+                            touched={touchedFields.confirmPassword || isSubmitted}
                             secureTextEntry
                             styles={customStyles}
-                            leftIcon={<LockIcon size={20} color="#9ca3af" />}
+                            icon={fields?.confirmPassword?.icon || <LockIcon size={20} color="#9ca3af" />}
+                            iconPosition={fields?.confirmPassword?.iconPosition}
+                            iconStyle={fields?.confirmPassword?.iconStyle}
+                            placeholderStyle={fields?.confirmPassword?.placeholderStyle}
+                            IconComponent={IconComponent}
                         />
                     )}
                 />
@@ -312,8 +350,8 @@ export const RHFForm: React.FC<RHFFormProps> = ({
                                 checkboxStyle={acceptTerms?.checkboxStyle}
                                 checkboxCheckedStyle={acceptTerms?.checkboxCheckedStyle}
                                 checkmarkColor={acceptTerms?.checkmarkColor}
-                                labelStyle={acceptTerms?.labelStyle}
-                                linkStyle={acceptTerms?.linkStyle}
+                                labelStyle={acceptTerms?.labelStyle || customStyles?.checkboxLabel}
+                                linkStyle={acceptTerms?.linkStyle || customStyles?.checkboxLink}
                             />
                         )}
                     />
@@ -327,14 +365,20 @@ export const RHFForm: React.FC<RHFFormProps> = ({
             <View style={styles.submitContainer}>
                 {submitButton?.component ? (
                     submitButton.component({
-                        onPress: handleSubmit(onFormSubmit),
+                        onPress: () => {
+                            submitButton.onPress?.();
+                            handleSubmit(onFormSubmit)();
+                        },
                         isLoading: isLoading || isSubmitting,
                         disabled: isLoading || isSubmitting,
                         title: submitButton?.text || submitButtonText || (mode === 'signin' ? 'Sign In' : 'Create Account'),
                     })
                 ) : (
                     <SubmitButton
-                        onPress={handleSubmit(onFormSubmit)}
+                        onPress={() => {
+                            submitButton?.onPress?.();
+                            handleSubmit(onFormSubmit)();
+                        }}
                         title={
                             submitButton?.text || submitButtonText ||
                             (mode === 'signin' ? 'Sign In' : 'Create Account')

@@ -147,7 +147,7 @@ export const getZodSignUpSchema = (fieldsConfig?: FieldsConfig) => {
                 /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
                 'Password must contain at least one uppercase letter, one lowercase letter, and one number'
             ),
-        confirmPassword: z.string(),
+        confirmPassword: z.string().min(1, 'Please confirm your password'),
         firstName: fieldsConfig?.firstName?.required
             ? z.string().min(2, 'First name must be at least 2 characters')
             : z.string().min(2, 'First name must be at least 2 characters').optional(),

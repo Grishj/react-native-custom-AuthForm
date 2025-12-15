@@ -1,0 +1,2 @@
+src/components/AuthForm.tsx(33,5): error TS2339: Property 'IconComponent' does not exist on type 'Omit<AuthFormProps, "theme" | "translations">'.
+src/ui/PhoneInput.tsx(158,21): error TS17001: JSX elements cannot have multiple attributes with the same name.
