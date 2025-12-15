@@ -14,8 +14,8 @@ A highly customizable, feature-rich, and distinct authentication form for React 
 - **Colocated Styling:** Style every component (inputs, buttons, texts) directly from the configuration props.
 - **Icon System:** Unified `iconSource` prop supporting any icon library (e.g., `@expo/vector-icons`, `react-native-vector-icons`).
 - **Smart Inputs:** 
-  - Password visibility toggle.
-  - Phone number input with country code picker support.
+  - Inbuilt Password visibility toggle.
+  - Inbuilt Phone number input with country code picker support.
   - Auto-formatting and specific keyboard types.
 - **Hidden-by-Default:** clean API where you enable only what you need.
 
@@ -24,7 +24,7 @@ A highly customizable, feature-rich, and distinct authentication form for React 
 To get the form running, you only need three required props:
 - `mode`: `'signin'` or `'signup'`.
 - `onSubmit`: A callback function that receives the form data.
-- `validationType`: Choose your validation strategy (e.g., `'rhf-yup'`).
+- `validationType`: Choose your validation strategy (e.g., `'rhf-yup'`, `'formik-yup'`, `'rhf-zod'`).
 
 ### Default Fields by Mode
 By default (without any `fields` config), the form renders:
@@ -32,6 +32,37 @@ By default (without any `fields` config), the form renders:
 - **Signin Mode**: Email, Password, Remember Me Checkbox, Submit Button.
 
 > **Note**: You can manually override any field's visibility or style using the `fields` prop.
+
+### Hiding Default Fields
+To disable or hide any default field, set `visible: false` for that field in the `fields` prop:
+
+```tsx
+<AuthForm
+  // ...
+  fields={{
+    email: { visible: false },
+    // password: { visible: false } 
+  }}
+/>
+```
+
+### Phone Input Configuration
+The phone input comes with an optional country code picker.
+
+```tsx
+<AuthForm
+  // ...
+  fields={{
+    phone: {
+      visible: true,
+      countryPicker: {
+        enabled: true,
+        defaultCountry: 'US', // ISO 3166-1 alpha-2 code
+      }
+    }
+  }}
+/>
+```
 
 ### Manual Configuration & Styling
 You can manually configure and style any part of the form, such as `appLogo`, `header`, `footer`, `submitButton`, `socialLogins`, and `biometric`.
