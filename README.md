@@ -1,4 +1,4 @@
-# react-native-custom-form
+# react-native-custom-auth-form
 
 A highly customizable, feature-rich, and distinct authentication form for React Native. Built with flexibility in mind, it supports multiple validation strategies (Formik + Yup, React Hook Form + Zod/Yup), biometric authentication, social logins, and extensive styling capabilities.
 
@@ -72,7 +72,7 @@ If you do not provide these props, the form will use its default styles and layo
 ## �📦 Installation
 
 ```bash
-npm install react-native-custom-form
+npm install react-native-custom-auth-form
 ```
 
 ### Peer Dependencies
@@ -104,7 +104,7 @@ The simplest way to use `AuthForm` with default fields:
 ```tsx
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { AuthForm, AuthFormData } from 'react-native-custom-form';
+import { AuthForm, AuthFormData } from 'react-native-custom-auth-form';
 
 export default function App() {
   const handleSubmit = (data: AuthFormData) => {
@@ -124,7 +124,7 @@ export default function App() {
 ```
 
 ### Advanced Usage
-Here is a complete example demonstrating the power of `react-native-custom-form`:
+Here is a complete example demonstrating the power of `react-native-custom-auth-form`:
 
 ```tsx
 import React from 'react';
@@ -133,7 +133,7 @@ import { Image } from 'react-native';
 
 import { MaterialIcons, AntDesign, Entypo } from '@expo/vector-icons';
 
-import { AuthForm, AuthFormData } from 'react-native-custom-form';
+import { AuthForm, AuthFormData } from 'react-native-custom-auth-form';
 
 export default function App() {
   const handleSubmit = (data: AuthFormData) => {
@@ -156,6 +156,7 @@ export default function App() {
         styles={{
           container: { backgroundColor: '#fff' },
           header: { alignItems: 'center', paddingHorizontal: 20 },
+          // Style the "Or continue with" divider text
           dividerText: { color: '#5f5d84ff', fontWeight: '300', fontSize: 26 },
         }}
 
@@ -247,7 +248,7 @@ export default function App() {
           onPress: () => console.log('Navigate to Forgot Password screen'),
         }}
 
-        // Submit Button
+        // Submit Button - you can style it by yourself
         submitButton={{
           text: 'SignIn',
           style: { backgroundColor: '#78c14fff' },
@@ -255,7 +256,7 @@ export default function App() {
           onPress: () => console.log('Submit button pressed'),
         }}
 
-        // Remember Me Checkbox
+        // Remember Me Checkbox   for signin
         rememberMe={{
           enabled: true,
           label: 'Keep me logged in',
@@ -266,34 +267,62 @@ export default function App() {
         }}
 
         // Social Logins
+        // Social Logins - Supporting both simplified and custom configurations
         socialLogins={[
           { 
-            provider: 'google', 
+            provider: 'google', // use default icon
             onPress: () => console.log('Google Login'), 
-            iconPosition: 'left', 
-            iconStyle: { color: '#110b74ff', fontSize: 20 } 
           },
           { 
             provider: 'facebook', 
             onPress: () => console.log('Facebook Login'), 
             icon: 'facebook', 
             iconPosition: 'left', 
+            iconSource: MaterialIcons,// source from where you want to get icon of vector icons
             iconStyle: { color: '#4f46e5', fontSize: 20 } 
           },
         ]}
 
         // Footer / Sign Up Link
+        // Footer Configuration with Styles
         footer={{
           text: "Don't have an account?",
-          textStyle: { color: '#4f46e5', fontWeight: '300' },
-          textLink: 'Sign Up',
-          textLinkOnPress: () => console.log('Navigate to Sign Up screen'),
-          textLinkStyle: { color: '#638fe5ff' },
+          textLink: "Sign Up",
+          textLinkOnPress: () => console.log('Sign Up pressed'),
+          textStyle: {
+            color: 'red',
+            fontSize: 15,
+          },
+          textLinkStyle: {
+            color: 'black',
+            fontSize: 15,
+          },
         }}
       />
     </SafeAreaView>
   );
 }
+
+
+### acceptTerms Props  , is available in signup mode only
+
+```
+  acceptTerms={{
+          enabled: true,
+          label: "I accept the ",
+          linkText: "Terms and Conditions of use",
+          onLinkPress() {
+            console.log('Terms and Conditions pressed');
+          },
+          labelStyle: {
+            color: 'red',
+            fontSize: 15,
+          },
+          linkStyle: {
+            color: 'black',
+            fontSize: 15,
+          },
+
 ```
 
 ## ⚙️ Configuration Objects
@@ -305,7 +334,7 @@ export default function App() {
 | `mode` | `'signin' \| 'signup'` | Controls visible fields and default texts. |
 | `validationType` | `'formik-yup' \| 'rhf-zod' \| 'rhf-yup'` | Strategy validation strategy. |
 | `onSubmit` | `(data: AuthFormData) => void` | Callback with form data. |
-| `iconSource` | `React.ComponentType` | Global icon family (e.g., `MaterialIcons`). |
+| `iconSource` | `React.ComponentType` | Global icon family (e.g., `MaterialIcons`). | this is used when you want to use icon of vector icons
 | `fields` | `FieldsConfig` | Configuration for individual fields. |
 | `styles` | `AuthFormStyles` | Global override for container styles. |
 | `appLogo` | `ReactNode` | Render a custom logo/image at the top. |
@@ -328,6 +357,67 @@ export default function App() {
 | `iconStyle` | `TextStyle` | Style object for the icon. |
 | `placeholderStyle`| `TextStyle` | Style for the placeholder text. |
 
+
+### Configuration Detail Tables
+
+#### `appLogo` (LogoConfig)
+| Prop | Type | Description |
+|------|------|-------------|
+| `source` | `ReactNode` | **Required**. The image source or component to render. |
+| `size` | `number` | Size (width/height) if square. |
+| `width` | `number` | Specific width. |
+| `height` | `number` | Specific height. |
+| `style` | `ViewStyle` | Container style. |
+
+#### `biometric` (BiometricConfig)
+| Prop | Type | Description |
+|------|------|-------------|
+| `enabled` | `boolean` | **Required**. Enables the biometric button. |
+| `onAuthenticate` | `() => void` | **Required**. Callback when authentication is successful. |
+| `type` | `'fingerprint' \| 'faceId' \| 'both'` | Type of biometric icon to show. |
+| `icon` | `string \| ReactNode` | Custom icon name or component. |
+| `iconSource` | `Component` | Vector icon family. |
+| `style` | `ViewStyle` | Container style. |
+
+#### `socialLogins` (SocialLoginConfig Array)
+| Prop | Type | Description |
+|------|------|-------------|
+| `provider` | `'google' \| 'apple' \| 'facebook' \| ...` | **Required**. Identifies the provider. |
+| `onPress` | `() => void` | **Required**. Callback when pressed. |
+| `iconSource` | `Component` | Vector icon family (e.g., MaterialIcons). |
+| `icon` | `string` | Icon name from the library. |
+| `label` | `string` | Text label (optional). |
+
+#### `footer` (FooterConfig)
+| Prop | Type | Description |
+|------|------|-------------|
+| `enabled` | `boolean` | Set false to completely hide the footer. |
+| `text` | `string` | Informational text (e.g. "Don't have an account?"). |
+| `textLink` | `string` | Interactive link text (e.g. "Sign Up"). |
+| `textLinkOnPress` | `() => void` | Callback when link is pressed. |
+| `textStyle` | `TextStyle` | Style for the informational text. |
+| `textLinkStyle` | `TextStyle` | Style for the link text. |
+
+#### `submitButton` (SubmitButtonConfig)
+| Prop | Type | Description |
+|------|------|-------------|
+| `text` | `string` | Button text. |
+| `onPress` | `() => void` | Override the default form submission (use with caution). |
+| `style` | `ViewStyle` | Container button style. |
+| `textStyle` | `TextStyle` | Button text style. |
+
+#### `fields` (FieldsConfig)
+Map of field names to their config:
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `visible` | `boolean` | Toggle visibility. |
+| `required` | `boolean` | Mark as required for validation. |
+| `label` | `string` | Label above input. |
+| `placeholder` | `string` | Placeholder text. |
+| `iconSource` | `Component` | Vector icon family. |
+| `style` | `ViewStyle` | **New**. Style the input wrapper field-by-field. |
+
 ## 🎨 Styling
 
 The library supports **Colocated Styling**, meaning you can style almost any sub-component directly from its configuration object without needing a massive global stylesheet.
@@ -347,4 +437,4 @@ Contributions are welcome! Please open an issue or submit a pull request.
 
 ## 📄 License
 
-MIT  2025 grish joshi
+MIT 

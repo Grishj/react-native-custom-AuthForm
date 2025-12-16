@@ -21,7 +21,10 @@ export const Footer: React.FC<FooterProps> = ({
     textStyle,
     textLinkStyle,
     style,
+    enabled = true,
 }) => {
+    if (enabled === false) return null;
+
     const { width: screenWidth } = useWindowDimensions();
     const isSmallScreen = screenWidth < 375;
 
@@ -29,33 +32,64 @@ export const Footer: React.FC<FooterProps> = ({
     const getLegalTextSize = () => isSmallScreen ? 10 : 12;
 
     // Use new simplified API if provided, otherwise fall back to legacy API
-    const displayText = text || toggleText || (mode === 'signin' ? "Don't have an account?" : 'Already have an account?');
-    const displayLinkText = textLink || toggleLinkText || (mode === 'signin' ? 'Sign Up' : 'Sign In');
+    const resolvedText = text || toggleText;
+    const resolvedLinkText = textLink || toggleLinkText;
     const handleLinkPress = textLinkOnPress || onToggleMode;
+
+    // Only use defaults if we verify we are in a standard toggle mode scenario (action exists)
+    // or if neither specific text/link was provided (legacy behavior fallbacks)
+    // USER REQUEST: Footer should be opt-in only. No auto-defaults.
+    const showDefaults = false;
+
+    const finalDisplayText = showDefaults
+        ? (mode === 'signin' ? "Don't have an account?" : 'Already have an account?')
+        : (resolvedText || '');
+
+    const finalLinkText = showDefaults
+        ? (mode === 'signin' ? "Sign Up" : "Sign In")
+        : (resolvedLinkText || '');
+
+    const hasContent = !!finalDisplayText || !!finalLinkText;
 
     return (
         <View style={[styles.container, { marginTop: isSmallScreen ? 16 : 24 }, customStyles?.footer, style]}>
             {/* Toggle Mode / Custom Footer Text */}
-            {handleLinkPress && (
+            {hasContent && (
                 <View style={[styles.toggleContainer, { marginBottom: isSmallScreen ? 12 : 16 }]}>
-                    <Text style={[
-                        styles.text,
-                        { fontSize: getTextSize() },
-                        customStyles?.footerText,
-                        textStyle,
-                    ]}>
-                        {displayText}{' '}
-                    </Text>
-                    <TouchableOpacity onPress={handleLinkPress}>
+                    {!!finalDisplayText && (
                         <Text style={[
-                            styles.linkText,
+                            styles.text,
                             { fontSize: getTextSize() },
-                            customStyles?.footerLink,
-                            textLinkStyle,
+                            customStyles?.footerText,
+                            textStyle,
                         ]}>
-                            {displayLinkText}
+                            {finalDisplayText}{' '}
                         </Text>
-                    </TouchableOpacity>
+                    )}
+
+                    {!!finalLinkText && (
+                        handleLinkPress ? (
+                            <TouchableOpacity onPress={handleLinkPress}>
+                                <Text style={[
+                                    styles.linkText,
+                                    { fontSize: getTextSize() },
+                                    customStyles?.footerLink,
+                                    textLinkStyle,
+                                ]}>
+                                    {finalLinkText}
+                                </Text>
+                            </TouchableOpacity>
+                        ) : (
+                            <Text style={[
+                                styles.linkText,
+                                { fontSize: getTextSize() },
+                                customStyles?.footerLink,
+                                textLinkStyle,
+                            ]}>
+                                {finalLinkText}
+                            </Text>
+                        )
+                    )}
                 </View>
             )}
 

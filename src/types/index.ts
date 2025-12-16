@@ -77,6 +77,8 @@ export interface FieldConfig {
     iconStyle?: TextStyle;
     placeholderStyle?: TextStyle;
     iconSource?: React.ComponentType<any>;
+    /** Style for the input wrapper (container) */
+    style?: ViewStyle;
 }
 
 export interface FieldsConfig {
@@ -215,6 +217,10 @@ export interface AuthFormStyles {
     inputFocused?: ViewStyle;
     /** Style applied to input wrapper when blurred (default state) */
     inputBlurred?: ViewStyle;
+    /** Global style for the input wrapper (inner container) */
+    inputWrapper?: ViewStyle;
+    /** Global style for the icon separator line */
+    iconSeparator?: ViewStyle;
     button?: ViewStyle;
     buttonText?: TextStyle;
     buttonDisabled?: ViewStyle;
@@ -271,6 +277,7 @@ export interface FooterProps {
     onTermsPress?: () => void;
     onPrivacyPress?: () => void;
     styles?: Pick<AuthFormStyles, 'footer' | 'footerText' | 'footerLink'>;
+    enabled?: boolean;
     // New simplified API
     text?: string;
     textLink?: string;
@@ -294,7 +301,7 @@ export interface InputProps {
     keyboardType?: TextInputProps['keyboardType'];
     autoCapitalize?: TextInputProps['autoCapitalize'];
     autoComplete?: TextInputProps['autoComplete'];
-    styles?: Pick<AuthFormStyles, 'inputContainer' | 'input' | 'inputLabel' | 'inputError' | 'inputFocused' | 'inputBlurred'>;
+    styles?: Pick<AuthFormStyles, 'inputContainer' | 'input' | 'inputLabel' | 'inputError' | 'inputFocused' | 'inputBlurred' | 'inputWrapper' | 'iconSeparator'>;
     leftIcon?: ReactNode;
     rightIcon?: ReactNode;
     disabled?: boolean;
@@ -304,6 +311,8 @@ export interface InputProps {
     iconStyle?: TextStyle;
     placeholderStyle?: TextStyle;
     iconSource?: React.ComponentType<any>;
+    /** Custom style for the input wrapper/container specific to this instance */
+    wrapperStyle?: ViewStyle;
 }
 
 export interface SocialButtonProps {

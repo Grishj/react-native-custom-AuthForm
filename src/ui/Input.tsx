@@ -32,6 +32,7 @@ export const Input: React.FC<InputProps> = ({
     iconStyle,
     placeholderStyle,
     iconSource,
+    wrapperStyle,
 }) => {
     const { width: screenWidth } = useWindowDimensions();
 
@@ -113,6 +114,10 @@ export const Input: React.FC<InputProps> = ({
                 style={[
                     styles.inputWrapper,
                     { height: getInputHeight(), borderRadius: isSmallScreen ? 10 : 12 },
+                    // Apply global wrapper style
+                    customStyles?.inputWrapper,
+                    // Apply custom wrapper style (from field config) - overrides global
+                    wrapperStyle,
                     // Apply custom blur/default style
                     !isFocused ? customStyles?.inputBlurred : undefined,
                     // Apply focus style (custom or default)
@@ -124,7 +129,7 @@ export const Input: React.FC<InputProps> = ({
                 {leftIcon && (
                     <>
                         <View style={styles.iconLeft}>{leftIcon}</View>
-                        <View style={styles.iconSeparator} />
+                        <View style={[styles.iconSeparator, customStyles?.iconSeparator]} />
                     </>
                 )}
 

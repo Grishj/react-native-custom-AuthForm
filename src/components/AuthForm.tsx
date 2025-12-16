@@ -173,8 +173,8 @@ const AuthFormContent: React.FC<Omit<AuthFormProps, 'theme' | 'translations'>> =
                 <Footer
                     mode={mode}
                     onToggleMode={onModeChange ? handleModeChange : undefined}
-                    toggleText={footer?.toggleText || (mode === 'signin' ? t('dontHaveAccount') : t('alreadyHaveAccount'))}
-                    toggleLinkText={footer?.toggleLinkText || (mode === 'signin' ? t('signUp') : t('signIn'))}
+                    toggleText={footer?.toggleText}
+                    toggleLinkText={footer?.toggleLinkText}
                     forgotPasswordText={footer?.forgotPasswordText}
                     onForgotPassword={footer?.onForgotPassword}
                     termsText={footer?.termsText}

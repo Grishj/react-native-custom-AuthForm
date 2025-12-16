@@ -1,6 +1,6 @@
 {
-  "name": "react-native-custom-form",
-  "version": "1.0.0",
+  "name": "react-native-custom-auth-form",
+  "version": "1.1.0",
   "description": "A highly customizable sign-in/sign-up screen component for React Native with multiple validation library support",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -18,18 +18,31 @@
   },
   "keywords": [
     "react-native",
+    "react-native-component",
     "auth",
     "authentication",
     "login",
     "signup",
+    "signin",
+    "sign-in",
+    "sign-up",
+    "biometric",
+    "fingerprint",
+    "face-id",
+    "social-login",
     "form",
     "formik",
     "react-hook-form",
     "yup",
     "zod",
-    "validation"
+    "validation",
+    "expo",
+    "ios",
+    "android",
+    "custom-form",
+    "ui-kit"
   ],
-  "author": "",
+  "author": "Grish Joshi",
   "license": "MIT",
   "peerDependencies": {
     "react": ">=17.0.0",
@@ -50,6 +63,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/react-native-custom-form.git"
+    "url": "https://github.com/Grishj/react-native-custom-AuthForm.git"
   }
 }

@@ -131,6 +131,7 @@ export const RHFForm: React.FC<RHFFormProps> = ({
                             iconStyle={fields?.firstName?.iconStyle}
                             placeholderStyle={fields?.firstName?.placeholderStyle}
                             iconSource={fields?.firstName?.iconSource || iconSource}
+                            wrapperStyle={fields?.firstName?.style}
                         />
                     )}
                 />
@@ -158,6 +159,7 @@ export const RHFForm: React.FC<RHFFormProps> = ({
                             iconStyle={fields?.lastName?.iconStyle}
                             placeholderStyle={fields?.lastName?.placeholderStyle}
                             iconSource={fields?.lastName?.iconSource || iconSource}
+                            wrapperStyle={fields?.lastName?.style}
                         />
                     )}
                 />
@@ -185,6 +187,7 @@ export const RHFForm: React.FC<RHFFormProps> = ({
                             iconStyle={fields?.username?.iconStyle}
                             placeholderStyle={fields?.username?.placeholderStyle}
                             iconSource={fields?.username?.iconSource || iconSource}
+                            wrapperStyle={fields?.username?.style}
                         />
                     )}
                 />
@@ -214,6 +217,7 @@ export const RHFForm: React.FC<RHFFormProps> = ({
                             iconStyle={fields?.email?.iconStyle}
                             placeholderStyle={fields?.email?.placeholderStyle}
                             iconSource={fields?.email?.iconSource || iconSource}
+                            wrapperStyle={fields?.email?.style}
                         />
                     )}
                 />
@@ -241,6 +245,7 @@ export const RHFForm: React.FC<RHFFormProps> = ({
                             iconStyle={fields?.phone?.iconStyle}
                             placeholderStyle={fields?.phone?.placeholderStyle}
                             iconSource={fields?.phone?.iconSource || iconSource}
+                            wrapperStyle={fields?.phone?.style}
                         />
                     )}
                 />
@@ -269,6 +274,7 @@ export const RHFForm: React.FC<RHFFormProps> = ({
                             iconStyle={fields?.password?.iconStyle}
                             placeholderStyle={fields?.password?.placeholderStyle}
                             iconSource={fields?.password?.iconSource || iconSource}
+                            wrapperStyle={fields?.password?.style}
                         />
                     )}
                 />
@@ -307,6 +313,7 @@ export const RHFForm: React.FC<RHFFormProps> = ({
                             iconStyle={fields?.confirmPassword?.iconStyle}
                             placeholderStyle={fields?.confirmPassword?.placeholderStyle}
                             iconSource={fields?.confirmPassword?.iconSource || iconSource}
+                            wrapperStyle={fields?.confirmPassword?.style}
                         />
                     )}
                 />
