@@ -112,6 +112,8 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
                             placeholderStyle={fields?.firstName?.placeholderStyle}
                             iconSource={fields?.firstName?.iconSource || iconSource}
                             wrapperStyle={fields?.firstName?.style}
+                            focusedStyle={fields?.firstName?.focusedStyle}
+                            errorStyle={fields?.firstName?.errorStyle}
                         />
                     )}
 
@@ -133,6 +135,8 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
                             placeholderStyle={fields?.lastName?.placeholderStyle}
                             iconSource={fields?.lastName?.iconSource || iconSource}
                             wrapperStyle={fields?.lastName?.style}
+                            focusedStyle={fields?.lastName?.focusedStyle}
+                            errorStyle={fields?.lastName?.errorStyle}
                         />
                     )}
 
@@ -154,6 +158,8 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
                             placeholderStyle={fields?.username?.placeholderStyle}
                             iconSource={fields?.username?.iconSource || iconSource}
                             wrapperStyle={fields?.username?.style}
+                            focusedStyle={fields?.username?.focusedStyle}
+                            errorStyle={fields?.username?.errorStyle}
                         />
                     )}
 
@@ -177,6 +183,8 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
                             placeholderStyle={fields?.email?.placeholderStyle}
                             iconSource={fields?.email?.iconSource || iconSource}
                             wrapperStyle={fields?.email?.style}
+                            focusedStyle={fields?.email?.focusedStyle}
+                            errorStyle={fields?.email?.errorStyle}
                         />
                     )}
 
@@ -198,6 +206,8 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
                             placeholderStyle={fields?.phone?.placeholderStyle}
                             iconSource={fields?.phone?.iconSource || iconSource}
                             wrapperStyle={fields?.phone?.style}
+                            focusedStyle={fields?.phone?.focusedStyle}
+                            errorStyle={fields?.phone?.errorStyle}
                         />
                     )}
 
@@ -220,6 +230,8 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
                             placeholderStyle={fields?.password?.placeholderStyle}
                             iconSource={fields?.password?.iconSource || iconSource}
                             wrapperStyle={fields?.password?.style}
+                            focusedStyle={fields?.password?.focusedStyle}
+                            errorStyle={fields?.password?.errorStyle}
                         />
                     )}
 
@@ -251,6 +263,8 @@ export const FormikForm: React.FC<FormStrategyProps> = ({
                             placeholderStyle={fields?.confirmPassword?.placeholderStyle}
                             iconSource={fields?.confirmPassword?.iconSource || iconSource}
                             wrapperStyle={fields?.confirmPassword?.style}
+                            focusedStyle={fields?.confirmPassword?.focusedStyle}
+                            errorStyle={fields?.confirmPassword?.errorStyle}
                         />
                     )}
 

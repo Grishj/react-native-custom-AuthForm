@@ -179,6 +179,8 @@ export default function App() {
             visible: true,
             required: true,
             placeholder: 'Enter your phone number',
+            focusedStyle: { borderColor: '#4f46e5', borderWidth: 2 },
+            errorStyle: { borderColor: 'red', borderWidth: 2 },
           },
           username: {
             icon: 'person',
@@ -416,7 +418,9 @@ Map of field names to their config:
 | `label` | `string` | Label above input. |
 | `placeholder` | `string` | Placeholder text. |
 | `iconSource` | `Component` | Vector icon family. |
-| `style` | `ViewStyle` | **New**. Style the input wrapper field-by-field. |
+| `style` | `ViewStyle` | Style the input wrapper field-by-field. |
+| `focusedStyle` | `ViewStyle` | **New**. Style the input wrapper when focused. |
+| `errorStyle` | `ViewStyle` | **New**. Style the input wrapper when there is an error. |
 
 ## 🎨 Styling
 

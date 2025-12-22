@@ -34,6 +34,9 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
     iconStyle,
     placeholderStyle,
     iconSource,
+    wrapperStyle,
+    focusedStyle,
+    errorStyle,
 }) => {
     const { width: screenWidth } = useWindowDimensions();
 
@@ -127,8 +130,12 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
                 style={[
                     styles.inputWrapper,
                     { height: getInputHeight(), borderRadius: isSmallScreen ? 10 : 12 },
-                    isFocused ? styles.inputWrapperFocused : undefined,
-                    showError ? styles.inputWrapperError : undefined,
+                    // Apply custom wrapper style if available (it wasn't used before but likely should be if consistency needed, but let's stick to what we need)
+                    // Actually, wrapperStyle was not in PhoneInput destructuring before.
+                    // Let's check if I added it to destructuring. Yes, I did in the chunk above.
+                    wrapperStyle,
+                    isFocused ? (focusedStyle || customStyles?.inputFocused || styles.inputWrapperFocused) : undefined,
+                    showError ? (errorStyle || styles.inputWrapperError) : undefined,
                     disabled ? styles.inputWrapperDisabled : undefined,
                 ]}
             >

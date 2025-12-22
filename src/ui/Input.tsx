@@ -33,6 +33,8 @@ export const Input: React.FC<InputProps> = ({
     placeholderStyle,
     iconSource,
     wrapperStyle,
+    focusedStyle,
+    errorStyle,
 }) => {
     const { width: screenWidth } = useWindowDimensions();
 
@@ -120,9 +122,10 @@ export const Input: React.FC<InputProps> = ({
                     wrapperStyle,
                     // Apply custom blur/default style
                     !isFocused ? customStyles?.inputBlurred : undefined,
-                    // Apply focus style (custom or default)
-                    isFocused ? (customStyles?.inputFocused || styles.inputWrapperFocused) : undefined,
-                    showError ? styles.inputWrapperError : undefined,
+                    // Apply focus style (prop > custom > default)
+                    isFocused ? (focusedStyle || customStyles?.inputFocused || styles.inputWrapperFocused) : undefined,
+                    // Apply error style (prop > default)
+                    showError ? (errorStyle || styles.inputWrapperError) : undefined,
                     disabled ? styles.inputWrapperDisabled : undefined,
                 ]}
             >

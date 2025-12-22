@@ -79,6 +79,10 @@ export interface FieldConfig {
     iconSource?: React.ComponentType<any>;
     /** Style for the input wrapper (container) */
     style?: ViewStyle;
+    /** Style for the input wrapper (container) when focused */
+    focusedStyle?: ViewStyle;
+    /** Style for the input wrapper (container) when there is an error */
+    errorStyle?: ViewStyle;
 }
 
 export interface FieldsConfig {
@@ -313,6 +317,10 @@ export interface InputProps {
     iconSource?: React.ComponentType<any>;
     /** Custom style for the input wrapper/container specific to this instance */
     wrapperStyle?: ViewStyle;
+    /** Style for the input wrapper (container) when focused */
+    focusedStyle?: ViewStyle;
+    /** Style for the input wrapper (container) when there is an error */
+    errorStyle?: ViewStyle;
 }
 
 export interface SocialButtonProps {
